@@ -1731,6 +1731,22 @@
 
     // Launch streaming service
     function launchService(service) {
+      // If it's the system button, open system controls
+      if (service === 'system') {
+        openSystemControls();
+        return;
+      }
+      
+      // Check if Shift key is held = preview mode (use window.event for onclick attributes)
+      const evt = window.event;
+      if (evt && evt.shiftKey) {
+        const url = SERVICE_URLS[service];
+        if (url) {
+          showPiPPreview(service, url);
+        }
+        return;
+      }
+      
       // Highlight the clicked button with yellow border animation
       document.querySelectorAll('.dashboard-button').forEach(btn => {
         btn.classList.remove('clicked');
@@ -1888,6 +1904,12 @@
       currentVolume = value;
       document.getElementById('volumeValue').textContent = value + '%';
       
+      // Also update modal slider if it exists
+      const modalSlider = document.getElementById('volumeSliderModal');
+      const modalValue = document.getElementById('volumeValueModal');
+      if (modalSlider) modalSlider.value = value;
+      if (modalValue) modalValue.textContent = value + '%';
+      
       // Debounce the API call
       clearTimeout(window.volumeTimeout);
       window.volumeTimeout = setTimeout(() => {
@@ -1920,6 +1942,12 @@
     function setLightBrightness(value) {
       currentLightLevel = value;
       document.getElementById('lightValue').textContent = value + '%';
+      
+      // Also update modal slider if it exists
+      const modalSlider = document.getElementById('lightSliderModal');
+      const modalValue = document.getElementById('lightValueModal');
+      if (modalSlider) modalSlider.value = value;
+      if (modalValue) modalValue.textContent = value + '%';
       
       // Debounce the API call
       clearTimeout(window.lightTimeout);
@@ -2383,46 +2411,7 @@
       }
     }
 
-    // Update launchService to support PiP preview
-    const originalLaunchService = launchService;
-    function launchService(service) {
-      // If it's the system button, open system controls
-      if (service === 'system') {
-        openSystemControls();
-        return;
-      }
-      
-      // Check if Shift key is held = preview mode
-      if (event && event.shiftKey) {
-        const url = SERVICE_URLS[service];
-        if (url) {
-          showPiPPreview(service, url);
-        }
-      } else {
-        // Normal launch (call original function)
-        originalLaunchService(service);
-      }
-    }
 
-    // Update setVolume to also update modal
-    const originalSetVolume = setVolume;
-    function setVolume(value) {
-      originalSetVolume(value);
-      const modalSlider = document.getElementById('volumeSliderModal');
-      const modalValue = document.getElementById('volumeValueModal');
-      if (modalSlider) modalSlider.value = value;
-      if (modalValue) modalValue.textContent = value + '%';
-    }
-
-    // Update setLightBrightness to also update modal
-    const originalSetLightBrightness = setLightBrightness;
-    function setLightBrightness(value) {
-      originalSetLightBrightness(value);
-      const modalSlider = document.getElementById('lightSliderModal');
-      const modalValue = document.getElementById('lightValueModal');
-      if (modalSlider) modalSlider.value = value;
-      if (modalValue) modalValue.textContent = value + '%';
-    }
   </script>
 </body>
 </html>

@@ -1467,47 +1467,47 @@
         <div class="services-section">
           <div class="section-title">📺 Services</div>
           <div class="button-grid">
-              <button class="dashboard-button" onclick="launchService('netflix')" data-service="netflix">
+              <button class="dashboard-button" onclick="launchService('netflix')" oncontextmenu="event.preventDefault(); showPiPPreview('Netflix', SERVICE_URLS.netflix); return false;" data-service="netflix">
                 <img src="https://cdn.worldvectorlogo.com/logos/netflix-3.svg" class="service-logo" alt="Netflix" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🎬</span>
           <span class="button-label">Netflix</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('amazon')" data-service="amazon">
+              <button class="dashboard-button" onclick="launchService('amazon')" oncontextmenu="event.preventDefault(); showPiPPreview('Amazon Prime', SERVICE_URLS.amazon); return false;" data-service="amazon">
                 <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" class="service-logo" alt="Amazon Prime" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🎞️</span>
           <span class="button-label">Amazon Prime</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('youtube')" data-service="youtube">
+              <button class="dashboard-button" onclick="launchService('youtube')" oncontextmenu="event.preventDefault(); showPiPPreview('YouTube', SERVICE_URLS.youtube); return false;" data-service="youtube">
                 <img src="https://cdn.worldvectorlogo.com/logos/youtube-icon-2.svg" class="service-logo" alt="YouTube" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">▶️</span>
           <span class="button-label">YouTube</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('plex')" data-service="plex">
+              <button class="dashboard-button" onclick="launchService('plex')" oncontextmenu="event.preventDefault(); showPiPPreview('Plex', SERVICE_URLS.plex); return false;" data-service="plex">
                 <img src="plex film.jpg" class="service-logo" alt="Plex" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">📺</span>
           <span class="button-label">Plex</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('livetv')" data-service="livetv">
+              <button class="dashboard-button" onclick="launchService('livetv')" oncontextmenu="event.preventDefault(); showPiPPreview('Live TV', SERVICE_URLS.livetv); return false;" data-service="livetv">
           <img src="tvip.jpg" class="service-logo" alt="Live TV" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <span class="button-icon" style="display:none;">📡</span>
           <span class="button-label">Live TV</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('plexamp')" data-service="plexamp">
+              <button class="dashboard-button" onclick="launchService('plexamp')" oncontextmenu="event.preventDefault(); showPiPPreview('Plexamp', SERVICE_URLS.plexamp); return false;" data-service="plexamp">
                 <img src="plex music.jpg" class="service-logo" alt="Plexamp" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🎵</span>
           <span class="button-label">Plexamp</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('spotify')" data-service="spotify">
+              <button class="dashboard-button" onclick="launchService('spotify')" oncontextmenu="event.preventDefault(); showPiPPreview('Spotify', SERVICE_URLS.spotify); return false;" data-service="spotify">
                 <img src="https://open.spotify.com/favicon.ico" class="service-logo" alt="Spotify" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🎧</span>
           <span class="button-label">Spotify</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('smarthome')" data-service="smarthome">
+              <button class="dashboard-button" onclick="launchService('smarthome')" oncontextmenu="event.preventDefault(); showPiPPreview('Smart Home', SERVICE_URLS.smarthome); return false;" data-service="smarthome">
                 <img src="https://cdn.worldvectorlogo.com/logos/home-assistant.svg" class="service-logo" alt="Home Assistant" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🏠</span>
           <span class="button-label">Smart Home</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('news')" data-service="news">
+              <button class="dashboard-button" onclick="launchService('news')" oncontextmenu="event.preventDefault(); showPiPPreview('News', SERVICE_URLS.news); return false;" data-service="news">
                 <img src="https://cdn.worldvectorlogo.com/logos/bbc-logo.svg" class="service-logo" alt="BBC News" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">📰</span>
                 <span class="button-label">News</span>

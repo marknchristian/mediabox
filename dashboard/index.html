@@ -555,10 +555,10 @@
     }
 
     .dashboard-button {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.7);
       border: 3px solid rgba(255, 255, 255, 0.3);
       border-radius: 15px;
-      padding: 35px 20px 25px 20px;
+      padding: 20px 15px 20px 15px;
       font-size: 1.3em;
       color: #fff;
       cursor: pointer;
@@ -567,11 +567,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between; /* Push label to bottom */
-      gap: 12px;
+      gap: 8px;
       font-family: 'Roboto', sans-serif;
       position: relative;
       overflow: hidden;
-      min-height: 180px;
+      min-height: 200px;
     }
 
     /* 4K: Much larger buttons */
@@ -595,9 +595,10 @@
     }
 
     .dashboard-button:hover {
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.85);
       transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
     .dashboard-button:active {
@@ -641,32 +642,38 @@
     }
 
     .button-icon {
-      font-size: 2.2em;
+      font-size: 4em;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .service-logo {
-      width: 100px;
-      height: 100px;
-      object-fit: contain;
-      margin-bottom: 8px;
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      margin-bottom: 0;
+      flex: 1;
       /* Sharp rendering on high DPI displays */
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
+      border-radius: 8px;
     }
 
     /* 4K: Larger logos */
     @media (min-width: 3840px) {
       .service-logo {
-        width: 180px;
-        height: 180px;
+        width: 280px;
+        height: 280px;
       }
     }
 
     /* 8K: Extra large logos */
     @media (min-width: 7680px) {
       .service-logo {
-        width: 360px;
-        height: 360px;
+        width: 560px;
+        height: 560px;
       }
     }
 

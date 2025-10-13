@@ -277,17 +277,6 @@
       transform: translateX(24px);
     }
 
-    .build-number {
-      padding: 8px 16px;
-      border-radius: 8px;
-      background: rgba(30, 136, 229, 0.3);
-      border: 1px solid rgba(30, 136, 229, 0.5);
-      font-size: 0.9em;
-      font-weight: 600;
-      color: #42a5f5;
-      white-space: nowrap;
-    }
-
     .status-message {
       padding: 12px 20px;
       border-radius: 10px;
@@ -308,9 +297,9 @@
     }
 
     /* Responsive: Stack on smaller screens */
-    @media (max-width: 900px) {
+    @media (max-width: 1400px) {
       .main-content {
-      grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
       }
       
       .pip-preview-section {
@@ -1199,7 +1188,7 @@
       }
 
       .main-content {
-        grid-template-columns: 1fr 2fr; /* Keep 33% / 67% ratio */
+        grid-template-columns: 2fr 1fr;
         gap: 30px;
       }
 
@@ -1236,7 +1225,7 @@
       }
 
       .main-content {
-        grid-template-columns: 1fr 2fr; /* Keep 33% / 67% ratio */
+        grid-template-columns: 3fr 1fr;
         gap: 40px;
       }
       
@@ -1462,7 +1451,6 @@
         </div>
         
         <div class="header-right">
-          <div class="build-number" id="buildNumber">Build 1</div>
           <div class="status-message" id="statusMessage">Ready</div>
           <div class="header-info-item">
             <div class="header-info-icon" id="headerWeatherIcon">🌤️</div>
@@ -1479,7 +1467,7 @@
         <!-- Left: Services Section -->
         <div class="services-section">
           <div class="section-title">📺 Services</div>
-      <div class="button-grid">
+          <div class="button-grid">
               <button class="dashboard-button" onclick="launchService('netflix')" oncontextmenu="event.preventDefault(); showPiPPreview('Netflix', SERVICE_URLS.netflix); return false;" data-service="netflix">
                 <img src="https://cdn.worldvectorlogo.com/logos/netflix-3.svg" class="service-logo" alt="Netflix" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🎬</span>
@@ -1534,13 +1522,13 @@
                 <img src="https://cdn.worldvectorlogo.com/logos/microsoft-outlook-2019.svg" class="service-logo" alt="Calendar" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">📅</span>
                 <span class="button-label">Calendar</span>
-        </button>
+              </button>
               <button class="dashboard-button" onclick="openSystemControls()" data-service="system">
                 <span class="button-icon">⚙️</span>
                 <span class="button-label">System</span>
               </button>
-      </div>
           </div>
+        </div>
 
 
         <!-- Right: PiP Preview Area -->
@@ -1590,7 +1578,7 @@
       </div>
       
       <div class="system-controls-grid">
-            <!-- Volume Control -->
+        <!-- Volume Control -->
         <div class="system-control-group">
           <h3>🔊 Volume Control</h3>
           <div class="volume-control">
@@ -1602,20 +1590,20 @@
             <span id="volumeValueModal">50%</span>
           </div>
         </div>
-            
+        
         <!-- Lighting Control -->
         <div class="system-control-group">
           <h3>💡 Room Lighting</h3>
-              <div class="volume-control">
-                <button class="volume-btn" onclick="adjustLightBrightness(-10)">-</button>
-                <span class="volume-icon">🔅</span>
+          <div class="volume-control">
+            <button class="volume-btn" onclick="adjustLightBrightness(-10)">-</button>
+            <span class="volume-icon">🔅</span>
             <input type="range" class="volume-slider" id="lightSliderModal" min="0" max="100" value="50" oninput="setLightBrightness(this.value)">
-                <span class="volume-icon">🔆</span>
-                <button class="volume-btn" onclick="adjustLightBrightness(10)">+</button>
+            <span class="volume-icon">🔆</span>
+            <button class="volume-btn" onclick="adjustLightBrightness(10)">+</button>
             <span id="lightValueModal">50%</span>
-            </div>
-      </div>
-
+          </div>
+        </div>
+        
         <!-- Audio Output -->
         <div class="system-control-group">
           <h3>🔊 Audio Output</h3>
@@ -1623,36 +1611,36 @@
             <button class="audio-btn" onclick="switchAudio('hdmi')">HDMI</button>
             <button class="audio-btn" onclick="switchAudio('spdif')">SPDIF</button>
             <button class="audio-btn" onclick="switchAudio('analog')">Analog</button>
-            </div>
+          </div>
         </div>
         
         <!-- Launch Mode -->
         <div class="system-control-group">
           <h3>🖥️ Launch Mode</h3>
-              <div class="mode-controls">
-                <div class="mode-toggle" onclick="toggleLaunchMode()">
-                  <span id="modeLabel">🖥️ Container Mode</span>
-                  <div class="toggle-switch" id="modeSwitch">
-                    <div class="toggle-slider"></div>
-                  </div>
-                </div>
-                <div class="mode-toggle" onclick="toggleHassAutoLogin()">
-                  <span id="hassAutoLoginLabel">🔐 HA Manual Login</span>
-                  <div class="toggle-switch" id="hassAutoLoginSwitch">
-                    <div class="toggle-slider"></div>
-                  </div>
-                </div>
+          <div class="mode-controls">
+            <div class="mode-toggle" onclick="toggleLaunchMode()">
+              <span id="modeLabel">🖥️ Container Mode</span>
+              <div class="toggle-switch" id="modeSwitch">
+                <div class="toggle-slider"></div>
               </div>
+            </div>
+            <div class="mode-toggle" onclick="toggleHassAutoLogin()">
+              <span id="hassAutoLoginLabel">🔐 HA Manual Login</span>
+              <div class="toggle-switch" id="hassAutoLoginSwitch">
+                <div class="toggle-slider"></div>
               </div>
-              
-              <!-- System Actions -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- System Actions -->
         <div class="system-control-group">
           <h3>⚙️ System Actions</h3>
-      <div class="system-controls">
-        <button class="system-btn" onclick="refreshAudioDevices()">🔄 Refresh Audio</button>
-        <button class="system-btn" onclick="systemAction('shutdown')">🔌 Shutdown</button>
-        <button class="system-btn" onclick="systemAction('restart')">🔃 Restart</button>
-              </div>
+          <div class="system-controls">
+            <button class="system-btn" onclick="refreshAudioDevices()">🔄 Refresh Audio</button>
+            <button class="system-btn" onclick="systemAction('shutdown')">🔌 Shutdown</button>
+            <button class="system-btn" onclick="systemAction('restart')">🔃 Restart</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1784,12 +1772,12 @@
       if (isSecondPress) {
         showStatus(`Expanding ${service} to full screen...`, 'info');
         expandPiP();
-          return;
-        }
-        
+        return;
+      }
+      
       // First press or different service: Show in preview
-        const url = SERVICE_URLS[service];
-        if (url) {
+      const url = SERVICE_URLS[service];
+      if (url) {
         showStatus(`Loading ${service} in preview...`, 'info');
         showPiPPreview(service, url);
       }
@@ -2087,18 +2075,6 @@
 
     // Network, system status, version info, and news ticker removed - elements no longer displayed
 
-    // Fetch and display build number
-    async function fetchBuildNumber() {
-      try {
-        const response = await fetch('build.txt');
-        const buildNum = await response.text();
-        document.getElementById('buildNumber').textContent = `Build ${buildNum.trim()}`;
-      } catch (err) {
-        console.error('Failed to fetch build number:', err);
-        document.getElementById('buildNumber').textContent = 'Build 1';
-      }
-    }
-
     // Initialize and start updates
     function initializeInfoBar() {
       // Update clock immediately and every second
@@ -2108,14 +2084,8 @@
       // Fetch weather info
       fetchWeather();
       
-      // Fetch build number
-      fetchBuildNumber();
-      
       // Update weather every 10 minutes
       setInterval(fetchWeather, 600000);
-      
-      // Update build number every 30 seconds (to catch changes)
-      setInterval(fetchBuildNumber, 30000);
     }
 
     // Restore saved preferences

@@ -1653,6 +1653,8 @@
     let hassAutoLogin = false; // false = Manual Login, true = Auto-Login
     let pipWindow = null;
     let currentPiPService = null;
+    let lastClickedService = null;
+    let lastClickTime = 0;
     let hassCredentials = { username: '', password: '' };
 
     // Service URL mappings
@@ -1744,16 +1746,6 @@
         return;
       }
       
-      // Check if Shift key is held = preview mode (use window.event for onclick attributes)
-      const evt = window.event;
-      if (evt && evt.shiftKey) {
-        const url = SERVICE_URLS[service];
-        if (url) {
-          showPiPPreview(service, url);
-        }
-        return;
-      }
-      
       // Highlight the clicked button with yellow border animation
       document.querySelectorAll('.dashboard-button').forEach(btn => {
         btn.classList.remove('clicked');
@@ -1767,123 +1759,30 @@
         }, 2000);
       }
       
-      // Wait 2 seconds to let the yellow box highlighter animation run
-      setTimeout(() => {
-        if (browserMode) {
-        // Browser Mode: Open directly in Windows browser
-        
-        // Special handling for Plexamp - launch via API even in browser mode
-        if (service === 'plexamp') {
-          showStatus('Launching Plexamp native application...', 'info');
-          // Launch via API even in browser mode for Plexamp
-          fetch(`${API_BASE}/launch/${service}`, {
-            method: 'POST'
-          })
-          .then(response => response.json())
-          .then(data => {
-            showStatus(data.message || 'Plexamp launched successfully', 'success');
-            // Show additional info about VNC access
-            setTimeout(() => {
-              showStatus('Plexamp is running in the container. Use VNC viewer to connect to localhost:5900 to view it', 'info');
-            }, 2000);
-          })
-          .catch(err => {
-            showStatus(`Failed to launch Plexamp: ${err.message}`, 'error');
-            console.error(err);
-          });
-          return;
-        }
-        
-        // Special handling for Live TV - launch via API even in browser mode
-        if (service === 'livetv') {
-          showStatus('Launching Live TV (IPTV) with VLC...', 'info');
-          // Launch via API even in browser mode for IPTV
-          fetch(`${API_BASE}/launch/${service}`, {
-            method: 'POST'
-          })
-          .then(response => response.json())
-          .then(data => {
-            showStatus(data.message || 'Live TV (IPTV) launched successfully', 'success');
-            // Show additional info about VNC access
-            setTimeout(() => {
-              showStatus('VLC is running in the container. Use VNC viewer to connect to localhost:5900 to view it', 'info');
-            }, 2000);
-          })
-          .catch(err => {
-            showStatus(`Failed to launch Live TV (IPTV): ${err.message}`, 'error');
-            console.error(err);
-          });
-          return;
-        }
-        
-        // Special handling for Home Assistant with auto-login
-        if (service === 'smarthome' && hassAutoLogin) {
-          showStatus('Opening Home Assistant with auto-login...', 'info');
-          openHomeAssistantWithLogin();
-          setTimeout(() => {
-            showStatus('Home Assistant opened', 'success');
-          }, 500);
-          return;
-        }
-        
-        const url = SERVICE_URLS[service];
-        if (url) {
-          showStatus(`Opening ${service} in browser...`, 'info');
-          window.open(url, '_blank');
-          setTimeout(() => {
-            showStatus(`${service} opened in new tab`, 'success');
-          }, 500);
-        } else {
-          showStatus(`Unknown service: ${service}`, 'error');
-        }
-      } else {
-        // Container Mode: Launch via API in Docker container
-        
-        // Special handling for Plexamp with better feedback
-        if (service === 'plexamp') {
-          showStatus('Launching Plexamp native application...', 'info');
-        }
-        // Special handling for Live TV with better feedback
-        else if (service === 'livetv') {
-          showStatus('Launching Live TV (IPTV) with VLC...', 'info');
-        } else {
-          showStatus(`Launching ${service} in container...`, 'info');
-        }
-        
-      fetch(`${API_BASE}/launch/${service}`, {
-        method: 'POST'
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (service === 'plexamp') {
-          showStatus(data.message || 'Plexamp launched successfully', 'success');
-          // Show additional info about VNC access
-          setTimeout(() => {
-            showStatus('Plexamp is running in the container. Use VNC viewer to connect to localhost:5900 to view it', 'info');
-          }, 2000);
-        } else if (service === 'livetv') {
-          showStatus(data.message || 'Live TV (IPTV) launched successfully', 'success');
-          // Show additional info about VNC access
-          setTimeout(() => {
-            showStatus('VLC is running in the container. Use VNC viewer to connect to localhost:5900 to view it', 'info');
-          }, 2000);
-        } else {
-          showStatus(data.message || `${service} launched successfully`, 'success');
-        }
-      })
-      .catch(err => {
-        if (service === 'plexamp') {
-          showStatus(`Failed to launch Plexamp: ${err.message}`, 'error');
-        } else if (service === 'livetv') {
-          showStatus(`Failed to launch Live TV (IPTV): ${err.message}`, 'error');
-        } else {
-          showStatus(`Failed to launch ${service}: ${err.message}`, 'error');
-        }
-        console.error(err);
-      });
+      // Check if this is a second press on the same service (within 5 seconds)
+      const currentTime = Date.now();
+      const isSecondPress = (lastClickedService === service && (currentTime - lastClickTime) < 5000 && currentPiPService === service);
+      
+      // Update tracking
+      lastClickedService = service;
+      lastClickTime = currentTime;
+      
+      // If second press on same service that's in preview, expand to full screen
+      if (isSecondPress) {
+        showStatus(`Expanding ${service} to full screen...`, 'info');
+        expandPiP();
+        return;
       }
-      }, 2000); // End of 2-second delay
+      
+      // First press or different service: Show in preview
+      const url = SERVICE_URLS[service];
+      if (url) {
+        showStatus(`Loading ${service} in preview...`, 'info');
+        showPiPPreview(service, url);
+      }
     }
+
+    // Old browser/container mode code removed - now all services use preview-first approach
 
     // Switch audio output
     function switchAudio(output) {

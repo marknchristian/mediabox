@@ -311,7 +311,7 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.85);
       padding: 25px;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -650,30 +650,31 @@
     }
 
     .service-logo {
-      width: 140px;
-      height: 140px;
-      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      max-width: 140px;
+      max-height: 140px;
+      object-fit: contain;
       margin-bottom: 0;
       flex: 1;
       /* Sharp rendering on high DPI displays */
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
-      border-radius: 8px;
     }
 
     /* 4K: Larger logos */
     @media (min-width: 3840px) {
       .service-logo {
-        width: 280px;
-        height: 280px;
+        max-width: 280px;
+        max-height: 280px;
       }
     }
 
     /* 8K: Extra large logos */
     @media (min-width: 7680px) {
       .service-logo {
-        width: 560px;
-        height: 560px;
+        max-width: 560px;
+        max-height: 560px;
       }
     }
 

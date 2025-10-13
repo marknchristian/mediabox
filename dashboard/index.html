@@ -545,22 +545,22 @@
 
     .button-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(2, 1fr); /* Fixed 2 columns for TV remote navigation */
       gap: 20px;
     }
 
-    /* 4K: Larger buttons and gaps */
+    /* 4K: Keep 2 columns, larger gaps */
     @media (min-width: 3840px) {
       .button-grid {
-        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 40px;
       }
     }
 
-    /* 8K: Even larger */
+    /* 8K: Keep 2 columns, larger gaps */
     @media (min-width: 7680px) {
       .button-grid {
-        grid-template-columns: repeat(auto-fit, minmax(800px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 80px;
       }
     }
@@ -2185,14 +2185,8 @@
       const buttons = Array.from(document.querySelectorAll('.dashboard-button'));
       const currentIndex = buttons.findIndex(btn => btn === document.activeElement);
       
-      // Calculate grid columns dynamically based on grid container width
-      const gridContainer = document.querySelector('.button-grid');
-      if (!gridContainer) return;
-      
-      const containerWidth = gridContainer.offsetWidth;
-      const buttonWidth = 250; // minmax value from CSS
-      const gap = 20;
-      const cols = Math.floor((containerWidth + gap) / (buttonWidth + gap));
+      // Fixed 2-column grid for TV navigation
+      const cols = 2;
       
       let nextIndex = currentIndex;
       

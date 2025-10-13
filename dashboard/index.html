@@ -13,6 +13,25 @@
       box-sizing: border-box;
     }
 
+    /* ========== 4K/8K TV RESPONSIVE SCALING ========== */
+    html {
+      font-size: 16px; /* Base for 1080p */
+    }
+
+    /* 4K (3840x2160) - 200% scaling */
+    @media (min-width: 3840px) {
+      html {
+        font-size: 32px;
+      }
+    }
+
+    /* 8K (7680x4320) - 400% scaling */
+    @media (min-width: 7680px) {
+      html {
+        font-size: 64px;
+      }
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(135deg, #0a1929, #1a237e, #0d47a1, #1565c0);
@@ -26,6 +45,8 @@
       padding: 20px;
       overflow-x: hidden;
       position: relative;
+      /* Better text readability for TV viewing */
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     }
 
     /* Background Theme Variations */
@@ -249,35 +270,73 @@
     }
 
     .section-title {
-      font-size: 1.1em;
-      font-weight: 500;
+      font-size: 1.8em;
+      font-weight: 700;
       text-align: left;
-      opacity: 0.9;
-      margin-bottom: 10px;
+      opacity: 0.95;
+      margin-bottom: 15px;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
     }
 
     .button-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    /* 4K: Larger buttons and gaps */
+    @media (min-width: 3840px) {
+      .button-grid {
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 40px;
+      }
+    }
+
+    /* 8K: Even larger */
+    @media (min-width: 7680px) {
+      .button-grid {
+        grid-template-columns: repeat(auto-fit, minmax(800px, 1fr));
+        gap: 80px;
+      }
     }
 
     .dashboard-button {
       background: rgba(255, 255, 255, 0.15);
       border: 3px solid rgba(255, 255, 255, 0.3);
       border-radius: 15px;
-      padding: 25px 15px;
-      font-size: 1.1em;
+      padding: 35px 20px;
+      font-size: 1.3em;
       color: #fff;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-family: 'Roboto', sans-serif;
       position: relative;
       overflow: hidden;
+      min-height: 180px;
+    }
+
+    /* 4K: Much larger buttons */
+    @media (min-width: 3840px) {
+      .dashboard-button {
+        padding: 70px 40px;
+        font-size: 1.6em;
+        min-height: 320px;
+        border-width: 6px;
+      }
+    }
+
+    /* 8K: Extra large buttons */
+    @media (min-width: 7680px) {
+      .dashboard-button {
+        padding: 140px 80px;
+        font-size: 2em;
+        min-height: 640px;
+        border-width: 12px;
+      }
     }
 
     .dashboard-button:hover {
@@ -288,6 +347,27 @@
 
     .dashboard-button:active {
       transform: translateY(-1px);
+    }
+
+    /* ========== TV REMOTE CONTROL FOCUS STATES ========== */
+    .dashboard-button:focus {
+      outline: 6px solid #ffd700;
+      outline-offset: 8px;
+      background: rgba(255, 255, 255, 0.35);
+      transform: scale(1.08);
+      z-index: 10;
+      box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3),
+                  0 0 30px rgba(255, 215, 0, 0.6);
+    }
+
+    /* Pulsing animation for focused element */
+    @keyframes focusPulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.6); }
+      50% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0.5), 0 0 50px rgba(255, 215, 0, 0.8); }
+    }
+
+    .dashboard-button:focus {
+      animation: focusPulse 2s ease-in-out infinite;
     }
 
     .dashboard-button.clicked {
@@ -310,15 +390,35 @@
     }
 
     .service-logo {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       object-fit: contain;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+      /* Sharp rendering on high DPI displays */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+
+    /* 4K: Larger logos */
+    @media (min-width: 3840px) {
+      .service-logo {
+        width: 180px;
+        height: 180px;
+      }
+    }
+
+    /* 8K: Extra large logos */
+    @media (min-width: 7680px) {
+      .service-logo {
+        width: 360px;
+        height: 360px;
+      }
     }
 
     .button-label {
-      font-size: 0.85em;
-      font-weight: 500;
+      font-size: 1.1em;
+      font-weight: 700;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
     }
 
     .controls-row {
@@ -1974,12 +2074,68 @@
       }
     });
 
+    // ========== TV REMOTE CONTROL NAVIGATION ==========
+    // Arrow key navigation for TV remotes and keyboards
+    document.addEventListener('keydown', (e) => {
+      // Don't interfere with ESC key or if help modal is open
+      const modal = document.getElementById('helpModal');
+      if (modal && modal.classList.contains('active')) return;
+      
+      const buttons = Array.from(document.querySelectorAll('.dashboard-button'));
+      const currentIndex = buttons.findIndex(btn => btn === document.activeElement);
+      
+      // Calculate grid columns dynamically based on grid container width
+      const gridContainer = document.querySelector('.button-grid');
+      if (!gridContainer) return;
+      
+      const containerWidth = gridContainer.offsetWidth;
+      const buttonWidth = 250; // minmax value from CSS
+      const gap = 20;
+      const cols = Math.floor((containerWidth + gap) / (buttonWidth + gap));
+      
+      let nextIndex = currentIndex;
+      
+      switch(e.key) {
+        case 'ArrowRight':
+          nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % buttons.length;
+          break;
+        case 'ArrowLeft':
+          nextIndex = currentIndex === -1 ? 0 : (currentIndex - 1 + buttons.length) % buttons.length;
+          break;
+        case 'ArrowDown':
+          nextIndex = currentIndex === -1 ? 0 : Math.min(currentIndex + cols, buttons.length - 1);
+          break;
+        case 'ArrowUp':
+          nextIndex = currentIndex === -1 ? 0 : Math.max(currentIndex - cols, 0);
+          break;
+        case 'Enter':
+          if (currentIndex !== -1) {
+            buttons[currentIndex]?.click();
+          }
+          return;
+        default:
+          return;
+      }
+      
+      e.preventDefault();
+      buttons[nextIndex]?.focus();
+    });
+
     // Load initial data on page load
     window.addEventListener('load', () => {
       restoreLaunchMode();
       fetchHassCredentials();
       refreshAudioDevices();
       initializeInfoBar();
+      
+      // Auto-focus first button for TV remote navigation
+      setTimeout(() => {
+        const firstButton = document.querySelector('.dashboard-button');
+        if (firstButton) {
+          firstButton.focus();
+          console.log('TV Remote Navigation: First button auto-focused');
+        }
+      }, 500);
     });
   </script>
 </body>

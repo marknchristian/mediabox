@@ -166,6 +166,7 @@
       flex: 1;
       display: flex;
       align-items: center;
+      gap: 20px;
     }
 
     .header-left {
@@ -279,12 +280,14 @@
     .status-message {
       padding: 12px 20px;
       border-radius: 10px;
-      background: rgba(0, 0, 0, 0.2);
-      font-size: 0.9em;
-      min-width: 200px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 1em;
+      min-width: 150px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: 500;
     }
 
     .main-content {
@@ -1447,6 +1450,7 @@
               <div class="header-info-sub" id="headerWeatherDesc">Loading...</div>
             </div>
           </div>
+          <div class="status-message" id="statusMessage">Ready</div>
         </div>
       </div>
 
@@ -2134,141 +2138,7 @@
       }
     }
 
-    // Fetch network status
-    async function fetchNetworkStatus() {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        document.getElementById('ipAddress').textContent = data.ip;
-      } catch (err) {
-        document.getElementById('ipAddress').textContent = 'Offline';
-        console.error('Network status error:', err);
-      }
-    }
-
-    // Fetch system load
-    async function fetchSystemLoad() {
-      try {
-        const response = await fetch(`${API_BASE}/status`);
-        const data = await response.json();
-        if (data.success && data.status) {
-          const cpuLoad = data.status.cpu_percent || 0;
-          document.getElementById('systemLoad').textContent = `${cpuLoad}%`;
-        }
-      } catch (err) {
-        console.error('System load fetch error:', err);
-        document.getElementById('systemLoad').textContent = '--';
-      }
-    }
-
-    // Fetch version and build information
-    async function fetchVersionInfo() {
-      try {
-        const response = await fetch(`${API_BASE}/version`);
-        const data = await response.json();
-        if (data.success) {
-          document.getElementById('versionNumber').textContent = data.version;
-          document.getElementById('buildNumber').textContent = `Build ${data.build}`;
-        }
-      } catch (err) {
-        console.error('Version fetch error:', err);
-        document.getElementById('versionNumber').textContent = 'Unknown';
-        document.getElementById('buildNumber').textContent = 'Build Unknown';
-      }
-    }
-
-    // News ticker functionality
-    let newsMode = 'internal'; // 'internal' or 'external'
-    let bbcNewsData = [];
-    let currentNewsIndex = 0;
-
-    // Internal MediaBox AI news items
-    const internalNews = [
-      "🌐 Breaking: Latest tech updates and streaming news",
-      "📺 New shows and movies now available on your favorite platforms", 
-      "🔊 MediaBox AI now supports enhanced audio controls and smart home integration",
-      "⚡ System performance optimizations and new features rolling out",
-      "🏠 Smart home integration now supports more devices and automations",
-      "🎬 Enhanced streaming quality and faster loading times implemented",
-      "🔧 New system monitoring tools and health checks available",
-      "📱 Improved mobile and tablet compatibility for remote access"
-    ];
-
-    // Fetch BBC news headlines
-    async function fetchBBCNews() {
-      try {
-        // Using a CORS proxy to fetch BBC news (since BBC doesn't allow direct CORS)
-        const response = await fetch(`${API_BASE}/bbc-news`);
-        const data = await response.json();
-        
-        if (data.success && data.headlines) {
-          bbcNewsData = data.headlines.map(headline => `📰 ${headline}`);
-          console.log('BBC news loaded:', bbcNewsData.length, 'headlines');
-        }
-      } catch (err) {
-        console.error('Failed to fetch BBC news:', err);
-        // Fallback to internal news if BBC fails
-        bbcNewsData = [];
-      }
-    }
-
-    // Update news ticker content
-    function updateNewsTicker() {
-      const newsContent = document.getElementById('newsContent');
-      if (!newsContent) return;
-
-      let newsItems = [];
-      
-      if (newsMode === 'internal') {
-        newsItems = internalNews;
-      } else if (newsMode === 'external' && bbcNewsData.length > 0) {
-        newsItems = bbcNewsData;
-      } else {
-        newsItems = internalNews; // Fallback
-      }
-
-      // Create news items HTML
-      const newsHTML = newsItems.map(item => 
-        `<span class="news-item">${item}</span>`
-      ).join('');
-      
-      newsContent.innerHTML = newsHTML;
-    }
-
-    // Switch between internal and external news
-    function switchNewsMode() {
-      if (newsMode === 'internal') {
-        newsMode = 'external';
-        console.log('Switching to BBC news');
-      } else {
-        newsMode = 'internal';
-        console.log('Switching to internal news');
-      }
-      updateNewsTicker();
-    }
-
-    // Initialize news ticker
-    function initializeNewsTicker() {
-      // Wait 1.5 seconds before showing content to allow button highlighting animations
-      setTimeout(() => {
-        // Start with internal news
-        newsMode = 'internal';
-        updateNewsTicker();
-        
-        // Fetch BBC news in background
-        fetchBBCNews();
-        
-        // Switch to BBC news after 20 seconds (from now, not from page load)
-        setTimeout(() => {
-          if (bbcNewsData.length > 0) {
-            switchNewsMode();
-          }
-        }, 20000);
-        
-        // Refresh BBC news every 10 minutes
-        setInterval(fetchBBCNews, 600000);
-      }, 1500);
-    }
+    // Network, system status, version info, and news ticker removed - elements no longer displayed
 
     // Initialize and start updates
     function initializeInfoBar() {
@@ -2276,23 +2146,11 @@
       updateClock();
       setInterval(updateClock, 1000);
       
-      // Fetch weather and network info
+      // Fetch weather info
       fetchWeather();
-      fetchNetworkStatus();
-      fetchSystemLoad();
-      fetchVersionInfo();
-      
-      // Initialize news ticker
-      initializeNewsTicker();
       
       // Update weather every 10 minutes
       setInterval(fetchWeather, 600000);
-      
-      // Update network status every 5 minutes
-      setInterval(fetchNetworkStatus, 300000);
-      
-      // Update system load every 30 seconds
-      setInterval(fetchSystemLoad, 30000);
     }
 
     // Restore saved preferences

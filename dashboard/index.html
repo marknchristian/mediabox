@@ -289,8 +289,19 @@
 
     .main-content {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 25px;
+      grid-template-columns: 1fr 500px; /* Services | PiP Preview */
+      gap: 30px;
+    }
+
+    /* Responsive: Stack on smaller screens */
+    @media (max-width: 1400px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .pip-preview-section {
+        order: -1; /* PiP on top for mobile */
+      }
     }
 
     .services-section {
@@ -301,6 +312,212 @@
       padding: 25px;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* ========== PiP PREVIEW SECTION ========== */
+    .pip-preview-section {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      min-height: 600px;
+    }
+
+    .pip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .pip-header h3 {
+      font-size: 1.8em;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .pip-close-btn {
+      background: rgba(255, 0, 0, 0.3);
+      border: 1px solid rgba(255, 0, 0, 0.5);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.2em;
+    }
+
+    .pip-placeholder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .pip-placeholder-icon {
+      font-size: 5em;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .pip-placeholder p {
+      font-size: 1.3em;
+      opacity: 0.7;
+      margin: 10px 0;
+    }
+
+    .pip-hint {
+      font-size: 1em !important;
+      opacity: 0.5 !important;
+    }
+
+    .pip-active {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pip-info {
+      margin-bottom: 15px;
+      font-size: 1.4em;
+      font-weight: 600;
+    }
+
+    .pip-window-zone {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .pip-zone-hint {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 1.1em;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .pip-expand-btn {
+      background: linear-gradient(135deg, #1e88e5, #1565c0);
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 12px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pip-expand-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(30, 136, 229, 0.5);
+    }
+
+    .pip-controls {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .pip-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .pip-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .pip-btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* ========== SYSTEM CONTROLS MODAL ========== */
+    .system-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .system-modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .system-modal-content {
+      background: rgba(10, 25, 41, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .system-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .system-modal-header h2 {
+      font-size: 2.2em;
+      margin: 0;
+    }
+
+    .system-modal-close {
+      background: rgba(255, 0, 0, 0.3);
+      border: 1px solid rgba(255, 0, 0, 0.5);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.3em;
+    }
+
+    .system-controls-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 25px;
+    }
+
+    .system-control-group {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .system-control-group h3 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      opacity: 0.9;
     }
 
     .section-title {
@@ -1233,14 +1450,12 @@
         </div>
       </div>
 
-      <!-- Main Content Grid -->
+      <!-- Main Content Grid - Split View -->
       <div class="main-content">
-        <!-- Services Section -->
+        <!-- Left: Services Section -->
         <div class="services-section">
-      <!-- Streaming Services -->
-          <div>
-      <div class="section-title">📺 Streaming Services</div>
-      <div class="button-grid">
+          <div class="section-title">📺 Services</div>
+          <div class="button-grid">
               <button class="dashboard-button" onclick="launchService('netflix')" data-service="netflix">
                 <img src="https://cdn.worldvectorlogo.com/logos/netflix-3.svg" class="service-logo" alt="Netflix" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🎬</span>
@@ -1295,96 +1510,125 @@
                 <img src="https://cdn.worldvectorlogo.com/logos/microsoft-outlook-2019.svg" class="service-logo" alt="Calendar" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">📅</span>
                 <span class="button-label">Calendar</span>
-        </button>
-      </div>
+              </button>
+              <button class="dashboard-button" onclick="openSystemControls()" data-service="system">
+                <span class="button-icon">⚙️</span>
+                <span class="button-label">System</span>
+              </button>
           </div>
+        </div>
+
+
+        <!-- Right: PiP Preview Area -->
+        <div class="pip-preview-section">
+          <div class="pip-header">
+            <h3 id="pipTitle">Preview</h3>
+            <button class="pip-close-btn" onclick="closePiP()" style="display: none;" id="pipCloseBtn">✕</button>
           </div>
           
-        <!-- Controls Section -->
-        <div class="controls-row">
-          <!-- Volume & Lighting Controls -->
-          <div class="volume-lighting-section">
-            <div class="section-title">🔊 Volume & Lighting</div>
+          <div class="pip-placeholder" id="pipPlaceholder">
+            <div class="pip-placeholder-icon">📺</div>
+            <p>Select a service to preview</p>
+            <p class="pip-hint">Service will open in a positioned window</p>
+          </div>
+          
+          <div class="pip-active" id="pipActive" style="display: none;">
+            <div class="pip-info">
+              <span id="pipServiceName">Netflix</span>
+            </div>
             
-            <!-- Volume Control -->
-            <div class="audio-section">
+            <!-- PiP Window Zone - positioned window appears here -->
+            <div class="pip-window-zone" id="pipZone">
+              <p class="pip-zone-hint">Service window will appear here</p>
+              <button class="pip-expand-btn" id="pipExpandBtn" onclick="expandPiP()" style="display: none;">
+                ↗ Expand to Full Screen
+              </button>
+            </div>
+            
+            <div class="pip-controls">
+              <button class="pip-btn" onclick="expandPiP()">↗ Full Screen</button>
+              <button class="pip-btn pip-btn-secondary" onclick="repositionPiP()">↻ Reposition</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Bar and News Ticker removed for cleaner layout -->
+    </div>
+  </div>
+
+  <!-- System Controls Modal -->
+  <div class="system-modal" id="systemModal">
+    <div class="system-modal-content">
+      <div class="system-modal-header">
+        <h2>⚙️ System Controls</h2>
+        <button class="system-modal-close" onclick="closeSystemControls()">✕</button>
+      </div>
+      
+      <div class="system-controls-grid">
+        <!-- Volume Control -->
+        <div class="system-control-group">
+          <h3>🔊 Volume Control</h3>
           <div class="volume-control">
             <button class="volume-btn" onclick="adjustVolume(-5)">-</button>
             <span class="volume-icon">🔈</span>
-            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50" oninput="setVolume(this.value)">
+            <input type="range" class="volume-slider" id="volumeSliderModal" min="0" max="100" value="50" oninput="setVolume(this.value)">
             <span class="volume-icon">🔊</span>
             <button class="volume-btn" onclick="adjustVolume(5)">+</button>
-            <span id="volumeValue">50%</span>
+            <span id="volumeValueModal">50%</span>
           </div>
         </div>
-            
-            <!-- Lighting Controls -->
-            <div class="section-title" style="margin-top: 20px;">💡 Room Lights</div>
-            <div class="lighting-controls">
-              <div class="volume-control">
-                <button class="volume-btn" onclick="adjustLightBrightness(-10)">-</button>
-                <span class="volume-icon">🔅</span>
-                <input type="range" class="volume-slider" id="lightSlider" min="0" max="100" value="50" oninput="setLightBrightness(this.value)">
-                <span class="volume-icon">🔆</span>
-                <button class="volume-btn" onclick="adjustLightBrightness(10)">+</button>
-                <span id="lightValue">50%</span>
+        
+        <!-- Lighting Control -->
+        <div class="system-control-group">
+          <h3>💡 Room Lighting</h3>
+          <div class="volume-control">
+            <button class="volume-btn" onclick="adjustLightBrightness(-10)">-</button>
+            <span class="volume-icon">🔅</span>
+            <input type="range" class="volume-slider" id="lightSliderModal" min="0" max="100" value="50" oninput="setLightBrightness(this.value)">
+            <span class="volume-icon">🔆</span>
+            <button class="volume-btn" onclick="adjustLightBrightness(10)">+</button>
+            <span id="lightValueModal">50%</span>
+          </div>
+        </div>
+        
+        <!-- Audio Output -->
+        <div class="system-control-group">
+          <h3>🔊 Audio Output</h3>
+          <div class="audio-output-selector" id="audioOutputsModal">
+            <button class="audio-btn" onclick="switchAudio('hdmi')">HDMI</button>
+            <button class="audio-btn" onclick="switchAudio('spdif')">SPDIF</button>
+            <button class="audio-btn" onclick="switchAudio('analog')">Analog</button>
+          </div>
+        </div>
+        
+        <!-- Launch Mode -->
+        <div class="system-control-group">
+          <h3>🖥️ Launch Mode</h3>
+          <div class="mode-controls">
+            <div class="mode-toggle" onclick="toggleLaunchMode()">
+              <span id="modeLabel">🖥️ Container Mode</span>
+              <div class="toggle-switch" id="modeSwitch">
+                <div class="toggle-slider"></div>
               </div>
             </div>
-      </div>
-
-          <!-- System Controls (Collapsible) -->
-          <div class="system-section">
-            <div class="collapsible-header" onclick="toggleSystemCollapse()">
-              <div class="section-title" style="margin: 0;">⚙️ System</div>
-              <span class="collapse-icon" id="systemCollapseIcon">▼</span>
-            </div>
-            <div class="collapsible-content" id="systemContent">
-              <!-- Mode Controls -->
-              <div class="section-title" style="margin-top: 15px; margin-bottom: 10px;">🖥️ Launch Mode</div>
-              <div class="mode-controls">
-                <div class="mode-toggle" onclick="toggleLaunchMode()">
-                  <span id="modeLabel">🖥️ Container Mode</span>
-                  <div class="toggle-switch" id="modeSwitch">
-                    <div class="toggle-slider"></div>
-                  </div>
-                </div>
-                <div class="mode-toggle" onclick="toggleHassAutoLogin()">
-                  <span id="hassAutoLoginLabel">🔐 HA Manual Login</span>
-                  <div class="toggle-switch" id="hassAutoLoginSwitch">
-                    <div class="toggle-slider"></div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Audio Output Selection -->
-              <div class="section-title" style="margin-top: 15px; margin-bottom: 10px;">🔊 Audio Output</div>
-              <div class="audio-output-selector" id="audioOutputs">
-                <button class="audio-btn" onclick="switchAudio('hdmi')">HDMI</button>
-                <button class="audio-btn" onclick="switchAudio('spdif')">SPDIF</button>
-                <button class="audio-btn" onclick="switchAudio('analog')">Analog</button>
-              </div>
-              
-              <!-- System Actions -->
-              <div class="section-title" style="margin-top: 20px; margin-bottom: 10px;">⚙️ System Actions</div>
-      <div class="system-controls">
-        <button class="system-btn" onclick="refreshAudioDevices()">🔄 Refresh Audio</button>
-        <button class="system-btn" onclick="systemAction('shutdown')">🔌 Shutdown</button>
-        <button class="system-btn" onclick="systemAction('restart')">🔃 Restart</button>
+            <div class="mode-toggle" onclick="toggleHassAutoLogin()">
+              <span id="hassAutoLoginLabel">🔐 HA Manual Login</span>
+              <div class="toggle-switch" id="hassAutoLoginSwitch">
+                <div class="toggle-slider"></div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Info Bar removed - Time and Weather now in header -->
-
-      <!-- News Ticker -->
-      <div class="news-ticker">
-        <div class="news-content" id="newsContent">
-          <span class="news-item">🌐 Breaking: Latest tech updates and streaming news</span>
-          <span class="news-item">📺 New shows and movies now available on your favorite platforms</span>
-          <span class="news-item">🔊 MediaBox AI now supports enhanced audio controls and smart home integration</span>
-          <span class="news-item">⚡ System performance optimizations and new features rolling out</span>
+        
+        <!-- System Actions -->
+        <div class="system-control-group">
+          <h3>⚙️ System Actions</h3>
+          <div class="system-controls">
+            <button class="system-btn" onclick="refreshAudioDevices()">🔄 Refresh Audio</button>
+            <button class="system-btn" onclick="systemAction('shutdown')">🔌 Shutdown</button>
+            <button class="system-btn" onclick="systemAction('restart')">🔃 Restart</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1396,6 +1640,8 @@
     let currentLightLevel = 50;
     let browserMode = false; // false = Container Mode, true = Browser Mode
     let hassAutoLogin = false; // false = Manual Login, true = Auto-Login
+    let pipWindow = null;
+    let currentPiPService = null;
     let hassCredentials = { username: '', password: '' };
 
     // Service URL mappings
@@ -2169,6 +2415,156 @@
         }
       }, 500);
     });
+
+    // ========== SYSTEM CONTROLS MODAL ==========
+    function openSystemControls() {
+      const modal = document.getElementById('systemModal');
+      modal.classList.add('active');
+      
+      // Sync slider values with modal
+      document.getElementById('volumeSliderModal').value = currentVolume;
+      document.getElementById('volumeValueModal').textContent = currentVolume + '%';
+      document.getElementById('lightSliderModal').value = currentLightLevel;
+      document.getElementById('lightValueModal').textContent = currentLightLevel + '%';
+    }
+
+    function closeSystemControls() {
+      const modal = document.getElementById('systemModal');
+      modal.classList.remove('active');
+    }
+
+    // Close modal with ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('systemModal');
+        if (modal.classList.contains('active')) {
+          closeSystemControls();
+        }
+      }
+    });
+
+    // ========== PIP WINDOW MANAGEMENT ==========
+    function showPiPPreview(serviceName, url) {
+      currentPiPService = serviceName;
+      
+      // Hide placeholder, show active PiP
+      document.getElementById('pipPlaceholder').style.display = 'none';
+      document.getElementById('pipActive').style.display = 'flex';
+      document.getElementById('pipServiceName').textContent = serviceName;
+      document.getElementById('pipTitle').textContent = `Preview: ${serviceName}`;
+      document.getElementById('pipCloseBtn').style.display = 'block';
+      
+      // Calculate position for PiP zone
+      const pipZone = document.getElementById('pipZone');
+      const rect = pipZone.getBoundingClientRect();
+      
+      // Open service in positioned window
+      const windowFeatures = `width=${Math.floor(rect.width)},height=${Math.floor(rect.height)},left=${Math.floor(window.screenX + rect.left)},top=${Math.floor(window.screenY + rect.top)},resizable=yes,scrollbars=yes`;
+      
+      pipWindow = window.open(url, serviceName + '_pip', windowFeatures);
+      
+      // Show hint to user
+      document.querySelector('.pip-zone-hint').textContent = `${serviceName} is opening in positioned window...`;
+      document.getElementById('pipExpandBtn').style.display = 'block';
+      
+      console.log(`PiP Preview: ${serviceName} window opened`);
+    }
+
+    function closePiP() {
+      if (pipWindow && !pipWindow.closed) {
+        pipWindow.close();
+      }
+      
+      // Reset PiP UI
+      document.getElementById('pipPlaceholder').style.display = 'flex';
+      document.getElementById('pipActive').style.display = 'none';
+      document.getElementById('pipTitle').textContent = 'Preview';
+      document.getElementById('pipCloseBtn').style.display = 'none';
+      document.getElementById('pipExpandBtn').style.display = 'none';
+      document.querySelector('.pip-zone-hint').textContent = 'Service window will appear here';
+      
+      pipWindow = null;
+      currentPiPService = null;
+    }
+
+    function expandPiP() {
+      if (currentPiPService) {
+        const url = SERVICE_URLS[currentPiPService.toLowerCase()];
+        
+        // Close PiP window
+        if (pipWindow && !pipWindow.closed) {
+          pipWindow.close();
+        }
+        
+        // Open full screen
+        window.open(url, currentPiPService + '_fullscreen', 'fullscreen=yes,width=' + screen.width + ',height=' + screen.height);
+        
+        // Reset PiP UI
+        closePiP();
+      }
+    }
+
+    function repositionPiP() {
+      if (currentPiPService) {
+        const url = SERVICE_URLS[currentPiPService.toLowerCase()];
+        
+        // Close existing window
+        if (pipWindow && !pipWindow.closed) {
+          pipWindow.close();
+        }
+        
+        // Reopen in PiP zone
+        const pipZone = document.getElementById('pipZone');
+        const rect = pipZone.getBoundingClientRect();
+        
+        const windowFeatures = `width=${Math.floor(rect.width)},height=${Math.floor(rect.height)},left=${Math.floor(window.screenX + rect.left)},top=${Math.floor(window.screenY + rect.top)},resizable=yes,scrollbars=yes`;
+        
+        pipWindow = window.open(url, currentPiPService + '_pip', windowFeatures);
+        
+        console.log(`PiP Repositioned: ${currentPiPService}`);
+      }
+    }
+
+    // Update launchService to support PiP preview
+    const originalLaunchService = launchService;
+    function launchService(service) {
+      // If it's the system button, open system controls
+      if (service === 'system') {
+        openSystemControls();
+        return;
+      }
+      
+      // Check if Shift key is held = preview mode
+      if (event && event.shiftKey) {
+        const url = SERVICE_URLS[service];
+        if (url) {
+          showPiPPreview(service, url);
+        }
+      } else {
+        // Normal launch (call original function)
+        originalLaunchService(service);
+      }
+    }
+
+    // Update setVolume to also update modal
+    const originalSetVolume = setVolume;
+    function setVolume(value) {
+      originalSetVolume(value);
+      const modalSlider = document.getElementById('volumeSliderModal');
+      const modalValue = document.getElementById('volumeValueModal');
+      if (modalSlider) modalSlider.value = value;
+      if (modalValue) modalValue.textContent = value + '%';
+    }
+
+    // Update setLightBrightness to also update modal
+    const originalSetLightBrightness = setLightBrightness;
+    function setLightBrightness(value) {
+      originalSetLightBrightness(value);
+      const modalSlider = document.getElementById('lightSliderModal');
+      const modalValue = document.getElementById('lightValueModal');
+      if (modalSlider) modalSlider.value = value;
+      if (modalValue) modalValue.textContent = value + '%';
+    }
   </script>
 </body>
 </html>

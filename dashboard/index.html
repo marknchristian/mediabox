@@ -161,10 +161,50 @@
       gap: 15px;
     }
 
+    .header-left,
+    .header-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-left {
+      justify-content: flex-start;
+    }
+
+    .header-right {
+      justify-content: flex-end;
+    }
+
+    .header-info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-info-icon {
+      font-size: 2em;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .header-info-main {
+      font-size: 1.4em;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .header-info-sub {
+      font-size: 0.85em;
+      opacity: 0.8;
+      line-height: 1;
+    }
+
     .logo-title {
       display: flex;
       align-items: center;
       gap: 20px;
+      flex: 1;
+      justify-content: center;
     }
 
     .logo {
@@ -189,12 +229,6 @@
       background-clip: text;
     }
 
-    .header-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-    }
 
     .mode-toggle {
       background: rgba(255, 255, 255, 0.1);
@@ -304,7 +338,7 @@
       background: rgba(255, 255, 255, 0.15);
       border: 3px solid rgba(255, 255, 255, 0.3);
       border-radius: 15px;
-      padding: 35px 20px;
+      padding: 35px 20px 25px 20px;
       font-size: 1.3em;
       color: #fff;
       cursor: pointer;
@@ -312,6 +346,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: space-between; /* Push label to bottom */
       gap: 12px;
       font-family: 'Roboto', sans-serif;
       position: relative;
@@ -419,6 +454,9 @@
       font-size: 1.1em;
       font-weight: 700;
       text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+      margin-top: auto; /* Push to bottom */
+      width: 100%;
+      text-align: center;
     }
 
     .controls-row {
@@ -1169,12 +1207,29 @@
     <div class="glass-panel">
       <!-- Header with Title and Status -->
       <div class="header">
+        <div class="header-left">
+          <div class="header-info-item">
+            <div class="header-info-icon">🕐</div>
+            <div>
+              <div class="header-info-main" id="headerTime">--:--</div>
+              <div class="header-info-sub" id="headerDate">Loading...</div>
+            </div>
+          </div>
+        </div>
+        
         <div class="logo-title">
           <img src="logo.png" alt="MediaBox AI" class="logo" onerror="this.style.display='none'">
           <h1>MediaBox AI</h1>
         </div>
+        
         <div class="header-right">
-          <div class="status-message" id="statusMessage">Ready</div>
+          <div class="header-info-item">
+            <div class="header-info-icon" id="headerWeatherIcon">🌤️</div>
+            <div>
+              <div class="header-info-main" id="headerTemperature">--°</div>
+              <div class="header-info-sub" id="headerWeatherDesc">Loading...</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1321,32 +1376,7 @@
         </div>
       </div>
 
-      <!-- Info Bar with Time, Weather, and System Info -->
-      <div class="info-bar">
-        <div class="info-item">
-          <div class="info-icon">🕐</div>
-          <div class="info-main" id="currentTime">--:--</div>
-          <div class="info-sub" id="currentDate">Loading...</div>
-      </div>
-
-        <div class="info-item">
-          <div class="info-icon" id="weatherIcon">🌤️</div>
-          <div class="info-main" id="temperature">--°</div>
-          <div class="info-sub" id="weatherDesc">Loading weather...</div>
-        </div>
-        
-        <div class="info-item">
-          <div class="info-icon">🌐</div>
-          <div class="info-main" id="ipAddress">Checking...</div>
-          <div class="info-sub">IP Address</div>
-        </div>
-        
-        <div class="info-item">
-          <div class="info-icon">💾</div>
-          <div class="info-main" id="systemLoad">--</div>
-          <div class="info-sub">CPU Usage</div>
-        </div>
-      </div>
+      <!-- Info Bar removed - Time and Weather now in header -->
 
       <!-- News Ticker -->
       <div class="news-ticker">
@@ -1786,8 +1816,9 @@
         day: 'numeric' 
       });
       
-      document.getElementById('currentTime').textContent = timeStr;
-      document.getElementById('currentDate').textContent = dateStr;
+      // Update header time (new location)
+      document.getElementById('headerTime').textContent = timeStr;
+      document.getElementById('headerDate').textContent = dateStr;
     }
 
     // Fetch weather data
@@ -1847,12 +1878,13 @@
           395: '⛈️',  // Moderate or heavy snow with thunder
         };
         
-        document.getElementById('weatherIcon').textContent = weatherIcons[weatherCode] || '🌤️';
-        document.getElementById('temperature').textContent = `${temp}°F`;
-        document.getElementById('weatherDesc').textContent = desc;
+        // Update header weather (new location)
+        document.getElementById('headerWeatherIcon').textContent = weatherIcons[weatherCode] || '🌤️';
+        document.getElementById('headerTemperature').textContent = `${temp}°F`;
+        document.getElementById('headerWeatherDesc').textContent = desc;
       } catch (err) {
         console.error('Weather fetch error:', err);
-        document.getElementById('weatherDesc').textContent = 'Weather unavailable';
+        document.getElementById('headerWeatherDesc').textContent = 'Weather unavailable';
       }
     }
 

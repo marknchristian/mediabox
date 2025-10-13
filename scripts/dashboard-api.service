@@ -1,0 +1,13 @@
+[Unit]
+Description=MediaBox AI Dashboard API
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/mediabox/scripts/dashboard-api.py
+WorkingDirectory=/home/mediabox/scripts
+Restart=always
+User=mediabox
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

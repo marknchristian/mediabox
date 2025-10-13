@@ -1,0 +1,39 @@
+You are helping build a modular, future-proof Linux-based media center running inside a Docker container for now, with the goal of converting into a bootable ISO or installable SSD system.
+
+The project is called "MediaBox AI".
+
+Main features:
+- Runs Chromium in kiosk mode to load a local HTML dashboard
+- Supports streaming services like Netflix, Amazon Prime, Plex (via browser)
+- Runs a Plex Media Server scanning USB or internal folders
+- Routes audio via best available path: SPDIF (optical or coax), HDMI, or analog 3.5mm jack
+- Supports bit-perfect passthrough of Dolby/DTS via SPDIF for connection to 7.1 amplifier
+- Remote control via KDE Connect and VNC (bVNC or Remmina)
+- Runs under host network mode to access PulseAudio, X11, USB, and sound devices
+- Volume and audio output switching is scriptable via a Python CLI tool (`audio-switcher.py`)
+- The UI is a customizable HTML/JS dashboard auto-launched on boot
+
+The project is containerized with Docker Compose for easy testing.
+
+Directory layout:
+- `/dashboard`: Local HTML UI launched via Chromium
+- `/scripts`: Python CLI tools like `audio-switcher.py`, test tones, volume controls
+- `docker-compose.yml`: Host-mode container with X11, Pulse, USB sound devices
+- Uses host’s PulseAudio socket for real sound output testing
+
+You will help me expand:
+- The Python tools: `audio-switcher.py` → add GUI or TUI, detect active sink, support presets
+- The HTML dashboard: navigation, status display, button → script bridge
+- Assist in converting this to a minimal ISO (eventually), but focus is Docker first
+
+Cursor should:
+- Detect the full architecture above
+- Assist with frontend (HTML/JS) and backend (Python + shell) code
+- Allow GPT-assisted editing of all modules
+- Help test the Docker image via embedded terminal
+
+Next steps:
+1. Generate a better UI for `dashboard/index.html` with buttons for Netflix, Plex, Amazon, YouTube
+2. Improve `audio-switcher.py` to auto-detect sinks and allow selection by name or index
+3. Add a Flask server to expose `/api/switch-audio`, `/api/volume`, `/api/shutdown`
+4. Add Python bridge to trigger audio switch from the HTML dashboard

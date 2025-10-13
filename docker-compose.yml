@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  mediabox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mediabox-controller
+    restart: unless-stopped
+    
+    # Note: host network mode doesn't work on Windows/Mac, use port mapping instead
+    # network_mode: host
+    
+    # Privileged mode for audio device access
+    privileged: true
+    
+    environment:
+      - DISPLAY=:0
+      - PULSE_SERVER=unix:/run/pulse/native
+      - TZ=America/New_York
+      # Home Assistant
+      - HASS_SERVER=http://homeassistant:8123
+      - HASS_USERNAME=threefingers
+      - HASS_PASSWORD=threefingers
+      # Flask Development Mode (auto-reload enabled)
+      - FLASK_ENV=development
+    
+    volumes:
+      # Application files (for development)
+      - ./dashboard:/app/dashboard
+      - ./scripts:/app/scripts
+      
+      # Audio devices
+      - /dev/snd:/dev/snd
+      - /run/user/1000/pulse:/run/pulse
+      
+      # Optional: X11 for GUI apps
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      
+      # Optional: USB devices for TV tuners, etc.
+      - /dev/bus/usb:/dev/bus/usb
+    
+    devices:
+      - /dev/snd:/dev/snd
+    
+    ports:
+      # Expose ports (only needed if not using host network)
+      - "8080:8080"   # Flask Dashboard & API
+      - "5900:5900"   # VNC (optional)
+      - "6080:6080"   # noVNC web interface
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    depends_on:
+      - homeassistant
+
+  # Official Home Assistant Container
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    volumes:
+      - ./ha_config:/config
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "8123:8123"   # Home Assistant Web UI
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  ha_config:
+    driver: local

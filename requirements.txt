@@ -1,0 +1,19 @@
+# Flask Web Framework
+flask==3.0.0
+flask-cors==4.0.0
+werkzeug==3.0.1
+
+# HTTP Clients
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# Audio/Video Processing
+pulsectl==23.5.2
+
+# System Information
+psutil==5.9.6
+
+# Development Tools
+python-dotenv==1.0.0
+
+# Note: Home Assistant runs in a separate container

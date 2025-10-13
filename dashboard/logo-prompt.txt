@@ -1,0 +1,58 @@
+🎨 MEDIABOX AI LOGO - AI GENERATION PROMPT
+===========================================
+
+Copy this entire prompt and paste it into your AI image generator:
+
+---
+
+Create a premium, modern logo for "MediaBox AI" - an intelligent home media center and entertainment hub.
+
+Design Requirements:
+• Combine entertainment/media elements (play button, screen, or media icon) with AI technology aesthetics
+• Incorporate subtle circuit patterns, neural network nodes, or digital particles to represent AI
+• Style: Glassmorphism - translucent, layered, with depth and soft glows
+• Color palette: Electric blue (#4facfe), bright cyan (#42a5f5), white accents, subtle gradients
+• Must work on dark backgrounds with glassmorphic blur effects
+• Icon-based design (no text in logo)
+• Modern, premium, tech-forward aesthetic
+
+Technical Specs:
+• Format: PNG with transparent background
+• Resolution: 512x512px or higher
+• Orientation: Square or slightly horizontal
+• Must be clear and recognizable at 60px height
+• Clean edges suitable for web display
+
+Style References:
+• Apple HomePod interface design
+• Sonos app aesthetics  
+• Modern smart home device branding
+• Futuristic entertainment system UI
+• Netflix/Plex premium tech feel
+
+The logo should instantly convey:
+1. Media & Entertainment
+2. Artificial Intelligence
+3. Smart Home Integration
+4. Premium/Professional Quality
+5. Modern Technology
+
+Style: clean, minimalist, glassmorphic, tech luxury, smart home
+Output: high-res PNG, transparent background, icon format
+
+---
+
+ALTERNATIVE SHORT VERSION:
+"MediaBox AI logo: fusion of media play button and AI circuit patterns, glassmorphic style, electric blue #4facfe to cyan #42a5f5 gradient, transparent PNG, modern tech aesthetic, 512px"
+
+---
+
+💡 RECOMMENDED TOOLS:
+• Bing Image Creator (DALL-E 3) - FREE: https://www.bing.com/images/create
+• Leonardo.ai - FREE tier: https://leonardo.ai
+• Adobe Firefly - FREE: https://firefly.adobe.com
+• Midjourney - $10/mo: https://midjourney.com
+• ChatGPT Plus (DALL-E 3) - $20/mo
+
+📁 SAVE AS: dashboard/logo.png
+

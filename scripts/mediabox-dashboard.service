@@ -1,0 +1,17 @@
+[Unit]
+Description=MediaBox AI Dashboard API Server
+After=network.target sound.target pulseaudio.service
+
+[Service]
+Type=simple
+User=mediabox
+WorkingDirectory=/home/mediabox/scripts
+ExecStart=/usr/bin/python3 /home/mediabox/scripts/dashboard-api.py
+Restart=always
+RestartSec=10
+Environment="DISPLAY=:0"
+Environment="PULSE_SERVER=unix:/run/user/1000/pulse/native"
+
+[Install]
+WantedBy=multi-user.target
+

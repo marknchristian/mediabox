@@ -45,6 +45,14 @@ try {
   console.error('[Main] Widevine auto-config failed:', e);
 }
 
+// Fallback: Try using electron-widevinecdm package if available
+try {
+  const widevinecdm = require('electron-widevinecdm');
+  console.log('[Main] electron-widevinecdm package found, using bundled Widevine');
+} catch (e) {
+  console.warn('[Main] electron-widevinecdm package not available:', e.message);
+}
+
 // Enable protected content playback for DRM (Netflix, Prime Video, etc.)
 app.commandLine.appendSwitch('enable-features', 'WidevineCdm');
 app.commandLine.appendSwitch('enable-features', 'WidevineCdmForTesting');

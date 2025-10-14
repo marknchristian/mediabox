@@ -100,3 +100,11 @@ MIT
 - V1 Repository: `../mediabox-v1/`
 - V2 Repository: `./` (this directory)
 - Main Dashboard: https://netlite.network/mediabox
+
+## Installable App Icons (Electron + PWA)
+
+- Electron installers use icons from `build/`:
+  - Windows: `build/icon.ico`
+  - Linux: `build/icon.png`
+- Web/PWA install prompts on Android/desktop browsers use `dashboard/manifest.json` and icons in `dashboard/icons/`.
+- Minimal service worker `dashboard/sw.js` is registered to enable the install button in supported browsers.

@@ -1974,6 +1974,53 @@
           intent: 'intent://open#Intent;scheme=appletv;package=com.apple.atv;end',
           packageId: 'com.apple.atv',
           web: SERVICE_URLS.appletv
+        },
+        netflix: {
+          scheme: 'nflx://',
+          intent: 'intent://www.netflix.com#Intent;scheme=nflx;package=com.netflix.mediaclient;end',
+          packageId: 'com.netflix.mediaclient',
+          web: SERVICE_URLS.netflix
+        },
+        youtube: {
+          scheme: 'vnd.youtube://',
+          intent: 'intent://www.youtube.com#Intent;scheme=vnd.youtube;package=com.google.android.youtube;end',
+          packageId: 'com.google.android.youtube',
+          web: SERVICE_URLS.youtube
+        },
+        spotify: {
+          scheme: 'spotify://',
+          intent: 'intent://open#Intent;scheme=spotify;package=com.spotify.music;end',
+          packageId: 'com.spotify.music',
+          web: SERVICE_URLS.spotify
+        },
+        telegram: {
+          scheme: 'tg://',
+          intent: 'intent://resolve#Intent;scheme=tg;package=org.telegram.messenger;end',
+          packageId: 'org.telegram.messenger',
+          web: SERVICE_URLS.telegram
+        },
+        smarthome: {
+          scheme: 'homeassistant://',
+          intent: 'intent://open#Intent;scheme=homeassistant;package=io.homeassistant.companion.android;end',
+          packageId: 'io.homeassistant.companion.android',
+          web: SERVICE_URLS.smarthome
+        },
+        news: {
+          // BBC News; no reliable scheme, prefer Play Store fallback
+          packageId: 'bbc.mobile.news.ww',
+          web: SERVICE_URLS.news
+        },
+        calendar: {
+          scheme: 'ms-outlook://',
+          intent: 'intent://mail#Intent;scheme=ms-outlook;package=com.microsoft.office.outlook;end',
+          packageId: 'com.microsoft.office.outlook',
+          web: SERVICE_URLS.calendar
+        },
+        livetv: {
+          scheme: 'vlc://',
+          intent: 'intent://open#Intent;scheme=vlc;package=org.videolan.vlc;end',
+          packageId: 'org.videolan.vlc',
+          web: SERVICE_URLS.livetv
         }
       };
 
@@ -2005,12 +2052,16 @@
         }
       }, 1500);
 
-      // Try custom scheme, then Chrome intent
+      // Try custom scheme, then Chrome intent (if provided)
       try {
-        window.location.href = target.scheme;
-        setTimeout(() => {
-          try { window.location.href = target.intent; } catch (e) {}
-        }, 250);
+        if (target.scheme) {
+          window.location.href = target.scheme;
+        }
+        if (target.intent) {
+          setTimeout(() => {
+            try { window.location.href = target.intent; } catch (e) {}
+          }, 250);
+        }
       } catch (e) {
         // Ignore; fallback timer will handle opening web
       }
@@ -2117,8 +2168,12 @@
           return;
         }
         
-      // Android native app override for Plex / Plexamp / Amazon / AppleTV+
-      if (isAndroidBrowser() && (service === 'plex' || service === 'plexamp' || service === 'amazon' || service === 'appletv')) {
+      // Android native app override for supported services
+      if (isAndroidBrowser() && (
+        service === 'plex' || service === 'plexamp' || service === 'amazon' || service === 'appletv' ||
+        service === 'netflix' || service === 'youtube' || service === 'spotify' || service === 'telegram' ||
+        service === 'smarthome' || service === 'news' || service === 'calendar' || service === 'livetv'
+      )) {
         openAndroidAppOrWeb(service);
         return;
       }

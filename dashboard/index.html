@@ -1872,6 +1872,14 @@
         <button class="system-btn" onclick="systemAction('restart')">🔃 Restart</button>
               </div>
         </div>
+
+        <!-- Widevine & DRM Debug Info -->
+        <div class="system-control-group">
+          <h3>🔍 Widevine & DRM Debug Info</h3>
+          <div id="widevineDebugInfo" style="font-family: monospace; font-size: 0.85em; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto; max-height: 400px; overflow-y: auto;">
+            <div style="color: #888;">Loading debug info...</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2589,6 +2597,85 @@
       el.textContent = label;
     }
 
+    // Update Widevine & DRM debug information
+    async function updateWidevineDebugInfo() {
+      const el = document.getElementById('widevineDebugInfo');
+      if (!el) return;
+
+      try {
+        const info = {
+          'Environment': isElectron ? 'Electron' : 'Browser',
+          'User Agent': navigator.userAgent || 'N/A',
+          'Platform': navigator.platform || 'N/A',
+          'Language': navigator.language || 'N/A',
+          'Hardware Concurrency': navigator.hardwareConcurrency || 'N/A',
+          'Device Memory': navigator.deviceMemory ? `${navigator.deviceMemory}GB` : 'N/A',
+          'Connection': navigator.connection ? `${navigator.connection.effectiveType || 'unknown'}` : 'N/A',
+          'Cookie Enabled': navigator.cookieEnabled ? 'Yes' : 'No',
+          'Do Not Track': navigator.doNotTrack || 'Not set'
+        };
+
+        if (isElectron && window.electronAPI) {
+          info['Electron Version'] = window.electronAPI.versions?.electron || 'N/A';
+          info['Node.js Version'] = window.electronAPI.versions?.node || 'N/A';
+          info['Chrome Version'] = window.electronAPI.versions?.chrome || 'N/A';
+          info['Platform (Node)'] = window.electronAPI.platform || 'N/A';
+        }
+
+        info['EME API Available'] = ('requestMediaKeySystemAccess' in navigator) ? 'Yes' : 'No';
+        info['Media Keys API'] = ('mediaKeys' in navigator.mediaDevices) ? 'Yes' : 'No';
+        
+        // Test Widevine support
+        let widevineStatus = 'Not Tested';
+        let widevineVersion = 'N/A';
+        try {
+          if ('requestMediaKeySystemAccess' in navigator) {
+            const config = [{
+              initDataTypes: ['cenc'],
+              videoCapabilities: [{ contentType: 'video/mp4; codecs="avc1.42E01E"' }]
+            }];
+            const keySystemAccess = await navigator.requestMediaKeySystemAccess('com.widevine.alpha', config);
+            widevineStatus = 'Available';
+            const keySystem = await keySystemAccess.createMediaKeys();
+            const session = await keySystem.createSession();
+            widevineVersion = session ? 'Active' : 'Inactive';
+          }
+        } catch (err) {
+          widevineStatus = `Error: ${err.message}`;
+        }
+        info['Widevine Status'] = widevineStatus;
+        info['Widevine Session'] = widevineVersion;
+
+        // Test other key systems
+        const keySystems = ['com.widevine.alpha', 'com.microsoft.playready', 'org.w3.clearkey'];
+        for (const ks of keySystems) {
+          try {
+            if ('requestMediaKeySystemAccess' in navigator) {
+              await navigator.requestMediaKeySystemAccess(ks, [{
+                initDataTypes: ['cenc'],
+                videoCapabilities: [{ contentType: 'video/mp4; codecs="avc1.42E01E"' }]
+              }]);
+              info[`${ks} Support`] = 'Yes';
+            }
+          } catch {
+            info[`${ks} Support`] = 'No';
+          }
+        }
+
+        // Format output
+        let html = '<div style="line-height: 1.8;">';
+        for (const [key, value] of Object.entries(info)) {
+          const color = value === 'Yes' || value === 'Available' || value === 'Active' ? '#4caf50' : 
+                       value === 'No' || value === 'Not Tested' || value === 'N/A' ? '#f44336' : '#fff';
+          html += `<div><strong style="color: #4facfe;">${key}:</strong> <span style="color: ${color};">${value}</span></div>`;
+        }
+        html += '</div>';
+        el.innerHTML = html;
+      } catch (err) {
+        el.innerHTML = `<div style="color: #f44336;">Error loading debug info: ${err.message}</div>`;
+      }
+    }
+
     // Initialize and start updates
     function initializeInfoBar() {
       // Update clock immediately and every second
@@ -2815,6 +2902,9 @@
       document.getElementById('volumeValueModal').textContent = currentVolume + '%';
       document.getElementById('lightSliderModal').value = currentLightLevel;
       document.getElementById('lightValueModal').textContent = currentLightLevel + '%';
+      
+      // Update Widevine debug info
+      updateWidevineDebugInfo();
     }
 
     function closeSystemControls() {

@@ -1961,6 +1961,19 @@
           scheme: 'plexamp://',
           intent: 'intent://open#Intent;scheme=plexamp;package=com.plexamp;end',
           web: SERVICE_URLS.plexamp
+        },
+        amazon: {
+          scheme: 'primevideo://',
+          intent: 'intent://open#Intent;scheme=primevideo;package=com.amazon.avod.thirdpartyclient;end',
+          packageId: 'com.amazon.avod.thirdpartyclient',
+          web: SERVICE_URLS.amazon
+        },
+        appletv: {
+          // Apple TV on Android TV; intent with package fallback
+          scheme: 'appletv://',
+          intent: 'intent://open#Intent;scheme=appletv;package=com.apple.atv;end',
+          packageId: 'com.apple.atv',
+          web: SERVICE_URLS.appletv
         }
       };
 
@@ -1984,6 +1997,10 @@
         document.removeEventListener('visibilitychange', onHide);
         if (!navigatedAway) {
           showStatus(`${service} app not available - opening web`, 'info');
+          // Prefer Play Store if we know the package
+          if (target.packageId) {
+            try { window.location.href = `market://details?id=${target.packageId}`; } catch (e) {}
+          }
           window.open(target.web, '_blank');
         }
       }, 1500);
@@ -2100,8 +2117,8 @@
           return;
         }
         
-      // Android native app override for Plex / Plexamp
-      if (isAndroidBrowser() && (service === 'plex' || service === 'plexamp')) {
+      // Android native app override for Plex / Plexamp / Amazon / AppleTV+
+      if (isAndroidBrowser() && (service === 'plex' || service === 'plexamp' || service === 'amazon' || service === 'appletv')) {
         openAndroidAppOrWeb(service);
         return;
       }

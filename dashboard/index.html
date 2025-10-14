@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; media-src 'self' https: blob:; connect-src 'self' http://localhost:8080 https: ws: wss:; frame-ancestors 'self'; object-src 'none'">
   <title>MediaBox AI Dashboard</title>
   
   <!-- Responsive Design System -->
@@ -1850,7 +1851,8 @@
   </div>
 
   <script>
-    const API_BASE = '/api';  // Use relative path since Flask serves both
+    // Resolve API base: if loaded via file:// in Electron, hit localhost:8080
+    const API_BASE = (location.protocol === 'file:') ? 'http://localhost:8080/api' : '/api';
     let currentVolume = 50;
     let currentLightLevel = 50;
     

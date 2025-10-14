@@ -34,6 +34,13 @@ function createWindow() {
   // Load the dashboard
   mainWindow.loadFile('dashboard/index.html');
 
+  // Set a modern desktop UA to align with DRM storefronts
+  try {
+    mainWindow.webContents.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    );
+  } catch {}
+
   // Help DRM pipelines by preventing screen capture on the main surface
   try {
     mainWindow.setContentProtection(true);

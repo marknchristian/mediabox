@@ -63,6 +63,13 @@ app.commandLine.appendSwitch('enable-features', 'PlatformEncryptedDolbyVision');
 app.commandLine.appendSwitch('enable-features', 'PlatformEncryptedHEVC');
 app.commandLine.appendSwitch('enable-features', 'PlatformEncryptedAV1');
 
+// Additional Widevine flags
+app.commandLine.appendSwitch('enable-features', 'WidevineHwSecureAll');
+app.commandLine.appendSwitch('enable-features', 'WidevinePersistentLicense');
+app.commandLine.appendSwitch('enable-features', 'WidevineUat');
+app.commandLine.appendSwitch('enable-features', 'WidevineUatForTesting');
+app.commandLine.appendSwitch('enable-widevine');
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,

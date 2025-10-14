@@ -1939,6 +1939,62 @@
       calendar: 'https://outlook.office.com/bookings/calendar'  // Outlook Bookings Calendar
     };
 
+    // Detect Android browser environment
+    function isAndroidBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return /Android/i.test(ua) && !(window.electronAPI); // not Electron
+    }
+
+    // Attempt to open native Android app, fallback to web URL on failure
+    function openAndroidAppOrWeb(service) {
+      const config = {
+        plex: {
+          scheme: 'plex://',
+          intent: 'intent://open#Intent;scheme=plex;package=com.plexapp.android;end',
+          web: SERVICE_URLS.plex
+        },
+        plexamp: {
+          scheme: 'plexamp://',
+          intent: 'intent://open#Intent;scheme=plexamp;package=com.plexamp;end',
+          web: SERVICE_URLS.plexamp
+        }
+      };
+
+      const target = config[service];
+      if (!target) {
+        window.open(SERVICE_URLS[service], '_blank');
+        return;
+      }
+
+      showStatus(`Opening ${service} app...`, 'info');
+
+      let navigatedAway = false;
+      const onHide = () => {
+        navigatedAway = true; // app likely opened
+        document.removeEventListener('visibilitychange', onHide);
+        clearTimeout(fallbackTimer);
+      };
+      document.addEventListener('visibilitychange', onHide);
+
+      const fallbackTimer = setTimeout(() => {
+        document.removeEventListener('visibilitychange', onHide);
+        if (!navigatedAway) {
+          showStatus(`${service} app not available - opening web`, 'info');
+          window.open(target.web, '_blank');
+        }
+      }, 1500);
+
+      // Try custom scheme, then Chrome intent
+      try {
+        window.location.href = target.scheme;
+        setTimeout(() => {
+          try { window.location.href = target.intent; } catch (e) {}
+        }, 250);
+      } catch (e) {
+        // Ignore; fallback timer will handle opening web
+      }
+    }
+
     // Fetch Home Assistant credentials
     async function fetchHassCredentials() {
       try {
@@ -2040,9 +2096,15 @@
           return;
         }
         
+      // Android native app override for Plex / Plexamp
+      if (isAndroidBrowser() && (service === 'plex' || service === 'plexamp')) {
+        openAndroidAppOrWeb(service);
+        return;
+      }
+
       // First press or different service: Show in preview
-        const url = SERVICE_URLS[service];
-        if (url) {
+      const url = SERVICE_URLS[service];
+      if (url) {
         showStatus(`Loading ${service} in preview...`, 'info');
         showPiPPreview(service, url);
       }

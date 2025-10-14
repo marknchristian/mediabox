@@ -871,6 +871,14 @@
       font-size: 0.75em !important;
     }
 
+    /* FHD mode tweaks: same reduction as HD */
+    .mode-fhd .button-label {
+      font-size: 0.55em;
+    }
+    .mode-fhd .header .build-number {
+      font-size: 0.75em !important;
+    }
+
     .controls-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -2367,13 +2375,12 @@
       // Update display
       resolutionText.textContent = displayText;
 
-      // Toggle HD mode class on body for CSS tweaks
+      // Toggle HD/FHD mode classes on body for CSS tweaks
       try {
-        if (cssWidth >= 1280 && cssWidth < 1920) {
-          document.body.classList.add('mode-hd');
-        } else {
-          document.body.classList.remove('mode-hd');
-        }
+        document.body.classList.remove('mode-hd');
+        document.body.classList.remove('mode-fhd');
+        if (cssWidth >= 1280 && cssWidth < 1920) document.body.classList.add('mode-hd');
+        else if (cssWidth >= 1920 && cssWidth < 3840) document.body.classList.add('mode-fhd');
       } catch {}
       
       // Log to console for debugging

@@ -17,6 +17,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   repositionPiPWindow: (bounds) => ipcRenderer.invoke('reposition-pip-window', bounds),
   togglePiPMini: () => ipcRenderer.invoke('toggle-pip-mini'),
   snapPiPCorner: (corner) => ipcRenderer.invoke('snap-pip-corner', corner),
+  openExternal: (url) => ipcRenderer.invoke('open-external', url),
   
   // Listen for PIP window events
   onPiPWindowClosed: (callback) => ipcRenderer.on('pip-window-closed', callback),

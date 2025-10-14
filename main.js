@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, globalShortcut, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -143,6 +143,18 @@ app.on('will-quit', () => {
     globalShortcut.unregisterAll();
   } catch (err) {
     console.warn('[Main] Failed to unregister shortcuts:', err);
+  }
+});
+
+// Open external URL in system browser
+ipcMain.handle('open-external', async (event, url) => {
+  try {
+    if (!url || typeof url !== 'string') return { success: false, error: 'Invalid URL' };
+    await shell.openExternal(url);
+    return { success: true };
+  } catch (err) {
+    console.error('[Main] open-external failed:', err);
+    return { success: false, error: err.message };
   }
 });
 

@@ -2893,6 +2893,18 @@
       }
     }
 
+    async function widevineAvailable() {
+      try {
+        if (!('requestMediaKeySystemAccess' in navigator)) return false;
+        const config = [{
+          initDataTypes: ['cenc'],
+          videoCapabilities: [{ contentType: 'video/mp4; codecs="avc1.42E01E"' }]
+        }];
+        await navigator.requestMediaKeySystemAccess('com.widevine.alpha', config);
+        return true;
+      } catch { return false; }
+    }
+
     async function showPiPPreview(serviceName, url) {
       currentPiPService = serviceName;
       
@@ -2908,6 +2920,17 @@
       
       // Check if running in Electron or Browser
       if (isElectron && window.electronAPI) {
+        // For DRM services, verify Widevine; if not available, open in system browser
+        const drmServices = ['netflix', 'amazon', 'appletv', 'youtube'];
+        const needsDRM = drmServices.includes(serviceName.toLowerCase());
+        if (needsDRM) {
+          const hasWidevine = await widevineAvailable();
+          if (!hasWidevine) {
+            showStatus(`Widevine not available - opening ${serviceName} in browser`, 'info');
+            try { await window.electronAPI.openExternal(url); } catch {}
+            return;
+          }
+        }
         // Electron Mode - Use separate BrowserWindow positioned over preview box
         console.log(`[PiP] Electron mode - creating positioned window`);
         

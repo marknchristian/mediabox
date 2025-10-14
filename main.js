@@ -13,24 +13,36 @@ try {
     const edgeWidevine = path.join(localAppData, 'Microsoft', 'Edge', 'User Data', 'WidevineCdm');
     const baseDir = fs.existsSync(chromeWidevine) ? chromeWidevine : (fs.existsSync(edgeWidevine) ? edgeWidevine : null);
 
+    console.log('[Main] Checking for Widevine in:', chromeWidevine);
+    console.log('[Main] Checking for Widevine in:', edgeWidevine);
+
     if (baseDir) {
+      console.log('[Main] Found Widevine base directory:', baseDir);
       const versions = fs.readdirSync(baseDir).filter(v => /^(\d+\.){3}\d+$/.test(v));
+      console.log('[Main] Found Widevine versions:', versions);
       versions.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
       const version = versions[versions.length - 1];
       if (version) {
-        const dllPath = path.join(baseDir, version, '_platform_specific', 'win_x64', 'widevinecdm.dll');
+        const versionDir = path.join(baseDir, version);
+        const dllPath = path.join(versionDir, '_platform_specific', 'win_x64', 'widevinecdm.dll');
+        console.log('[Main] Checking DLL path:', dllPath);
         if (fs.existsSync(dllPath)) {
-          app.commandLine.appendSwitch('widevine-cdm-path', dllPath);
+          // Use the version directory, not the DLL path
+          app.commandLine.appendSwitch('widevine-cdm-path', versionDir);
           app.commandLine.appendSwitch('widevine-cdm-version', version);
-          console.log('[Main] Widevine configured from:', dllPath, 'version:', version);
+          console.log('[Main] Widevine configured from directory:', versionDir, 'version:', version);
+        } else {
+          console.warn('[Main] Widevine DLL not found at:', dllPath);
         }
+      } else {
+        console.warn('[Main] No Widevine version found in:', baseDir);
       }
     } else {
-      console.warn('[Main] WidevineCdm folder not found in Chrome/Edge profile');
+      console.warn('[Main] WidevineCdm folder not found in Chrome or Edge profile');
     }
   }
 } catch (e) {
-  console.warn('[Main] Widevine auto-config failed:', e);
+  console.error('[Main] Widevine auto-config failed:', e);
 }
 
 // Enable protected content playback for DRM (Netflix, Prime Video, etc.)

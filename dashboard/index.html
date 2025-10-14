@@ -357,6 +357,27 @@
       transition: all 0.3s ease;
     }
 
+    .device-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: rgba(156, 39, 176, 0.25);
+      border: 1px solid rgba(156, 39, 176, 0.5);
+      font-size: 0.9em;
+      font-weight: 600;
+      color: #ce93d8;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .device-display:hover {
+      background: rgba(156, 39, 176, 0.35);
+      border-color: rgba(156, 39, 176, 0.7);
+      transform: translateY(-2px);
+    }
+
     .resolution-display:hover {
       background: rgba(76, 175, 80, 0.4);
       border-color: rgba(76, 175, 80, 0.7);
@@ -1643,6 +1664,9 @@
             <span class="resolution-icon">📺</span>
             <span class="resolution-text" id="resolutionText">--</span>
           </div>
+          <div class="device-display" id="deviceDisplay" title="Detected Platform">
+            <span id="deviceText">--</span>
+          </div>
           <div class="build-number" id="buildNumber">Build 17</div>
           <div class="status-message" id="statusMessage">Ready</div>
           <div class="header-info-item">
@@ -2539,6 +2563,32 @@
       console.log(`Mode: ${mode}`);
     }
 
+    // Detect and display platform/device
+    function updateDeviceDisplay() {
+      const el = document.getElementById('deviceText');
+      if (!el) return;
+      const ua = navigator.userAgent || '';
+      const isElectronEnv = !!(window.electronAPI);
+      const isAndroid = /Android/i.test(ua);
+      const isAndroidTV = isAndroid && (/TV|AFT|BRAVIA|SHIELD|MiBOX|ADT-\d+/i.test(ua) || /Android\s+TV/i.test(ua));
+      const isIOS = /iPad|iPhone|iPod/i.test(ua);
+      const isWindows = /Windows NT/i.test(ua);
+      const isLinux = /Linux/i.test(ua) && !isAndroid;
+      const isMac = /Macintosh|Mac OS X/i.test(ua);
+
+      let label = 'Unknown';
+      if (isAndroidTV) label = 'Android TV';
+      else if (isAndroid) label = 'Android';
+      else if (isIOS) label = 'Apple iOS';
+      else if (isWindows) label = 'Windows';
+      else if (isMac) label = 'macOS';
+      else if (isLinux) label = 'Linux';
+
+      if (isElectronEnv) label += ' • Electron';
+
+      el.textContent = label;
+    }
+
     // Initialize and start updates
     function initializeInfoBar() {
       // Update clock immediately and every second
@@ -2562,6 +2612,9 @@
       } catch (e) {
         console.warn('SW registration failed:', e);
       }
+
+      // Update device/platform display
+      updateDeviceDisplay();
       
       // Update weather every 10 minutes
       setInterval(fetchWeather, 600000);

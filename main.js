@@ -36,6 +36,13 @@ try {
         }
       } else {
         console.warn('[Main] No Widevine version found in:', baseDir);
+        console.log('[Main] Listing all items in WidevineCdm folder:');
+        try {
+          const items = fs.readdirSync(baseDir);
+          items.forEach(item => console.log('  -', item));
+        } catch (err) {
+          console.error('[Main] Could not list directory:', err);
+        }
       }
     } else {
       console.warn('[Main] WidevineCdm folder not found in Chrome or Edge profile');

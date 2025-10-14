@@ -1,0 +1,707 @@
+/* ========================================
+   MediaBox AI V2 - Responsive Design System
+   Multi-Form Factor Support (Mobile to 8K)
+   ======================================== */
+
+/* ========================================
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   ======================================== */
+
+:root {
+  /* Base sizes - Mobile First (Reduced by 50%) */
+  --base-font-size: 7px;
+  --base-spacing: 4px;
+  --card-padding: 6px;
+  --button-height: 20px;
+  --grid-gap: 6px;
+  --border-radius: 4px;
+  
+  /* Colors */
+  --bg-primary: rgba(0, 0, 0, 0.8);
+  --bg-secondary: rgba(0, 0, 0, 0.6);
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --accent-color: #00D9FF;
+  --accent-hover: #00B8D9;
+  --card-bg: rgba(30, 30, 30, 0.9);
+  --card-bg-hover: rgba(40, 40, 40, 0.95);
+  --focus-color: #00D9FF;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s ease;
+}
+
+/* ========================================
+   2. RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1142px) {
+  :root {
+    --base-font-size: 8px;
+    --base-spacing: 6px;
+    --card-padding: 8px;
+    --button-height: 24px;
+    --grid-gap: 8px;
+    --border-radius: 6px;
+  }
+}
+
+/* TabOnePlus (1143x635) - Custom device with smaller fonts */
+@media (min-width: 1143px) and (max-width: 1143px) {
+  :root {
+    --base-font-size: 3.5px;  /* 50% of mobile base (7px) */
+    --base-spacing: 3px;
+    --card-padding: 4px;
+    --button-height: 16px;
+    --grid-gap: 4px;
+    --border-radius: 4px;
+  }
+}
+
+/* Projector (1600x900) - Wide screen format */
+@media (min-width: 1600px) and (max-width: 1600px) {
+  :root {
+    --base-font-size: 9px;
+    --base-spacing: 8px;
+    --card-padding: 12px;
+    --button-height: 32px;
+    --grid-gap: 12px;
+    --border-radius: 8px;
+  }
+}
+  
+  /* Reduce all font sizes by 50% */
+  body {
+    font-size: 3.5px;
+  }
+  
+  h1 {
+    font-size: 6px;
+    line-height: 1.2;
+  }
+  
+  h2 {
+    font-size: 5px;
+    line-height: 1.3;
+  }
+  
+  h3 {
+    font-size: 4.5px;
+    line-height: 1.4;
+  }
+  
+  p {
+    font-size: 3.5px;
+  }
+  
+  .btn {
+    font-size: 3.5px;
+    padding: 2px 4px;
+  }
+  
+  .service-card .service-name {
+    font-size: 3.5px;
+  }
+  
+  .build-number {
+    font-size: 3.5px;
+    padding: 2px 4px;
+  }
+  
+  .resolution-display {
+    font-size: 3.5px;
+    padding: 2px 4px;
+  }
+  
+  .status-message {
+    font-size: 3.5px;
+    padding: 3px 6px;
+  }
+}
+
+/* Standard TV / HD */
+@media (min-width: 1280px) {
+  :root {
+    --base-font-size: 7px;
+    --base-spacing: 8px;
+    --card-padding: 10px;
+    --button-height: 28px;
+    --grid-gap: 10px;
+    --border-radius: 8px;
+  }
+}
+
+/* Full HD */
+@media (min-width: 1920px) {
+  :root {
+    --base-font-size: 9px;
+    --base-spacing: 10px;
+    --card-padding: 12px;
+    --button-height: 32px;
+    --grid-gap: 12px;
+    --border-radius: 10px;
+  }
+}
+
+/* 4K UHD */
+@media (min-width: 3840px) {
+  :root {
+    --base-font-size: 13.5px;
+    --base-spacing: 16px;
+    --card-padding: 20px;
+    --button-height: 56px;
+    --grid-gap: 20px;
+    --border-radius: 16px;
+    
+    /* Brighter colors for viewing distance */
+    --accent-color: #00FFFF;
+    --text-secondary: #E0E0E0;
+  }
+}
+
+/* 8K UHD */
+@media (min-width: 7680px) {
+  :root {
+    --base-font-size: 27px;
+    --base-spacing: 32px;
+    --card-padding: 40px;
+    --button-height: 112px;
+    --grid-gap: 40px;
+    --border-radius: 32px;
+  }
+}
+
+/* ========================================
+   3. FLUID TYPOGRAPHY (Reduced by 50%)
+   ======================================== */
+
+html {
+  font-size: var(--base-font-size);
+}
+
+body {
+  font-size: clamp(7px, 1vw, 16px);
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: clamp(12px, 2.5vw, 48px);
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0 0 var(--base-spacing);
+}
+
+h2 {
+  font-size: clamp(10px, 2vw, 36px);
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 0 0 var(--base-spacing);
+}
+
+h3 {
+  font-size: clamp(9px, 1.5vw, 24px);
+  line-height: 1.4;
+  font-weight: 600;
+  margin: 0 0 var(--base-spacing);
+}
+
+p {
+  font-size: clamp(7px, 1vw, 14px);
+  line-height: 1.6;
+  margin: 0 0 var(--base-spacing);
+}
+
+/* Lighter font weights for large displays */
+@media (min-width: 3840px) {
+  body {
+    font-weight: 300;
+  }
+  
+  h1, h2, h3 {
+    font-weight: 400;
+  }
+}
+
+/* ========================================
+   4. RESPONSIVE GRID SYSTEM
+   ======================================== */
+
+.service-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--grid-gap);
+  padding: var(--base-spacing);
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) and (max-width: 1142px) {
+  .service-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* TabOnePlus: 2 columns with smaller spacing */
+@media (min-width: 1143px) and (max-width: 1143px) {
+  .service-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 6px;
+  }
+  
+  .service-card {
+    padding: 8px;
+    min-height: 60px;
+  }
+  
+  .service-card img,
+  .service-card svg {
+    width: 32px;
+  }
+}
+
+/* Projector: 4 columns for wide screen */
+@media (min-width: 1600px) and (max-width: 1600px) {
+  .service-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 8px;
+  }
+  
+  .service-card {
+    padding: 12px;
+    min-height: 80px;
+  }
+  
+  .service-card img,
+  .service-card svg {
+    width: 40px;
+  }
+}
+
+/* Standard TV: 3 columns */
+@media (min-width: 1280px) {
+  .service-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Full HD: 4 columns */
+@media (min-width: 1920px) {
+  .service-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 4K: 5 columns */
+@media (min-width: 3840px) {
+  .service-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* 8K: 6 columns */
+@media (min-width: 7680px) {
+  .service-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* ========================================
+   5. SERVICE CARDS
+   ======================================== */
+
+.service-card {
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--card-bg), var(--card-bg-hover));
+  border-radius: var(--border-radius);
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--base-spacing);
+  cursor: pointer;
+  transition: transform var(--transition-normal), 
+              box-shadow var(--transition-normal);
+  min-height: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent, rgba(0, 217, 255, 0.1));
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.service-card:hover::before {
+  opacity: 1;
+}
+
+.service-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.service-card:active {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.service-card img,
+.service-card svg {
+  width: clamp(24px, 4vw, 96px);
+  height: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: transform var(--transition-normal);
+}
+
+.service-card:hover img,
+.service-card:hover svg {
+  transform: scale(1.1);
+}
+
+.service-card .service-name {
+  font-size: clamp(7px, 1.25vw, 20px);
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+/* ========================================
+   6. BUTTONS
+   ======================================== */
+
+.btn {
+  font-size: clamp(7px, 1.25vw, 20px);
+  padding: clamp(4px, 1vw, 12px) clamp(8px, 2vw, 24px);
+  min-height: var(--button-height);
+  min-width: clamp(60px, 10vw, 120px);
+  border: none;
+  border-radius: var(--border-radius);
+  background: var(--accent-color);
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--base-spacing);
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus {
+  outline: 4px solid var(--focus-color);
+  outline-offset: 4px;
+}
+
+/* ========================================
+   7. FOCUS STATES (TV Navigation)
+   ======================================== */
+
+*:focus {
+  outline: 4px solid var(--focus-color);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.3);
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+*:focus-visible {
+  outline: 4px solid var(--focus-color);
+  outline-offset: 4px;
+}
+
+.service-card:focus {
+  outline: 6px solid var(--focus-color);
+  outline-offset: 6px;
+  transform: scale(1.05);
+}
+
+/* ========================================
+   8. AUDIO CONTROLS
+   ======================================== */
+
+.audio-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-spacing);
+  padding: var(--card-padding);
+  background: var(--bg-secondary);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+}
+
+@media (min-width: 768px) {
+  .audio-controls {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.volume-slider {
+  flex: 1;
+  height: clamp(8px, 1.5vw, 24px);
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: clamp(20px, 3vw, 48px);
+  height: clamp(20px, 3vw, 48px);
+  background: var(--accent-color);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-fast);
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: clamp(20px, 3vw, 48px);
+  height: clamp(20px, 3vw, 48px);
+  background: var(--accent-color);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   9. HEADER
+   ======================================== */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--base-spacing);
+  gap: var(--base-spacing);
+  background: var(--bg-primary);
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 767px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing);
+}
+
+.build-number {
+  font-size: clamp(12px, 2vw, 32px);
+  font-weight: 600;
+  color: var(--accent-color);
+  padding: clamp(4px, 1vw, 12px) clamp(8px, 2vw, 24px);
+  background: rgba(0, 217, 255, 0.1);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(0, 217, 255, 0.3);
+}
+
+/* ========================================
+   10. STATUS MESSAGES
+   ======================================== */
+
+.status-message {
+  font-size: clamp(12px, 2vw, 28px);
+  padding: clamp(6px, 1.5vw, 18px) clamp(12px, 3vw, 36px);
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  text-align: center;
+}
+
+.status-message.success {
+  background: rgba(0, 255, 0, 0.2);
+  color: #00FF00;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.status-message.error {
+  background: rgba(255, 0, 0, 0.2);
+  color: #FF0000;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.status-message.info {
+  background: rgba(0, 217, 255, 0.2);
+  color: var(--accent-color);
+  border: 1px solid rgba(0, 217, 255, 0.3);
+}
+
+/* ========================================
+   11. ACCESSIBILITY
+   ======================================== */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --bg-primary: #000000;
+    --bg-secondary: #1A1A1A;
+    --text-primary: #FFFFFF;
+    --accent-color: #00FF00;
+  }
+  
+  .btn {
+    border: 2px solid var(--text-primary);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   12. UTILITY CLASSES
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--base-spacing);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 { margin-top: var(--base-spacing); }
+.mt-2 { margin-top: calc(var(--base-spacing) * 2); }
+.mt-3 { margin-top: calc(var(--base-spacing) * 3); }
+
+.mb-1 { margin-bottom: var(--base-spacing); }
+.mb-2 { margin-bottom: calc(var(--base-spacing) * 2); }
+.mb-3 { margin-bottom: calc(var(--base-spacing) * 3); }
+
+.p-1 { padding: var(--base-spacing); }
+.p-2 { padding: calc(var(--base-spacing) * 2); }
+.p-3 { padding: calc(var(--base-spacing) * 3); }
+
+/* ========================================
+   13. RESPONSIVE IMAGES
+   ======================================== */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ========================================
+   14. TOUCH OPTIMIZATION
+   ======================================== */
+
+/* Minimum touch target size (44x44px) */
+.btn, .service-card, .nav-item {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@media (max-width: 767px) {
+  .btn, .service-card, .nav-item {
+    min-height: 56px;
+    min-width: 56px;
+  }
+}
+
+/* Remove hover effects on touch devices */
+@media (hover: none) {
+  .service-card:hover {
+    transform: none;
+  }
+  
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* ========================================
+   15. PRINT STYLES
+   ======================================== */
+
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .btn, .service-card {
+    break-inside: avoid;
+  }
+}
+
+/* ========================================
+   END OF RESPONSIVE.CSS
+   ======================================== */
+

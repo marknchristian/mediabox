@@ -13,7 +13,7 @@ import json
 
 # MediaBox AI Version/Build Number
 VERSION = "1.0.0"
-BUILD_NUMBER = "2025.10.11.016"  # Format: YYYY.MM.DD.XXX
+BUILD_NUMBER = "2025.01.15.010"  # Format: YYYY.MM.DD.XXX - Build 10
 
 # Home Assistant Configuration
 # To enable auto-login, create a long-lived access token in Home Assistant:
@@ -169,9 +169,28 @@ def launch_service(service):
                 }), 500
         
         elif service == 'plexamp':
-            # Launch native Plexamp application
+            # Launch native Plexamp application with fallback to Plex
             try:
-                # Launch Plexamp via Flatpak as mediabox user
+                # First, check if Plexamp is installed
+                check_result = subprocess.run([
+                    'flatpak', 'info', 'com.plexamp.Plexamp'
+                ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                
+                if check_result.returncode != 0:
+                    # Plexamp not installed, launch Plex as fallback
+                    logger.warning("Plexamp not installed, launching Plex as fallback")
+                    subprocess.Popen([
+                        'su', '-', 'mediabox', '-c', 
+                        'DISPLAY=:0 flatpak run tv.plex.PlexDesktop'
+                    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    
+                    return jsonify({
+                        'success': True,
+                        'message': 'Plexamp not installed. Launched Plex as fallback.',
+                        'fallback': True
+                    })
+                
+                # Plexamp is installed, launch it
                 subprocess.Popen([
                     'su', '-', 'mediabox', '-c', 
                     'DISPLAY=:0 flatpak run com.plexamp.Plexamp'

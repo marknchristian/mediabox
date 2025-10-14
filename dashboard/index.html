@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MediaBox AI Dashboard</title>
+  
+  <!-- Responsive Design System -->
+  <link rel="stylesheet" href="responsive.css">
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap');
 
@@ -15,7 +19,7 @@
 
     /* ========== 4K/8K TV RESPONSIVE SCALING ========== */
     html {
-      font-size: 16px; /* Base for 1080p */
+      font-size: 14px; /* Base for 1080p */
     }
 
     /* 4K (3840x2160) - 200% scaling */
@@ -37,13 +41,14 @@
       background: linear-gradient(135deg, #0a1929, #1a237e, #0d47a1, #1565c0);
       background-size: 100% 100%;
       min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       color: #fff;
       padding: 20px;
-      overflow-x: hidden;
+      overflow: hidden;
       position: relative;
       /* Better text readability for TV viewing */
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -137,6 +142,7 @@
     .container {
       width: 100%;
       max-width: 1920px;
+      height: 100%;
       position: relative;
       z-index: 1;
     }
@@ -150,6 +156,10 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 30px;
       text-align: center;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     .header {
@@ -175,6 +185,38 @@
 
     .header-right {
       justify-content: flex-end;
+    }
+
+    .pip-toggle-btn {
+      background: rgba(30, 136, 229, 0.3);
+      border: 1px solid rgba(30, 136, 229, 0.5);
+      color: #42a5f5;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pip-toggle-btn:hover {
+      background: rgba(30, 136, 229, 0.4);
+      border-color: rgba(30, 136, 229, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .pip-toggle-btn.active {
+      background: rgba(76, 175, 80, 0.3);
+      border-color: rgba(76, 175, 80, 0.5);
+      color: #66bb6a;
+    }
+
+    .pip-toggle-btn.hidden {
+      display: none;
     }
 
     .header-info-item {
@@ -205,7 +247,7 @@
       align-items: center;
       gap: 20px;
       flex: 1;
-      justify-content: center;
+      justify-content: flex-start;
     }
 
     .logo {
@@ -214,6 +256,15 @@
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
       transition: transform 0.3s ease;
     }
+
+    .app-link {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      color: inherit;
+      text-decoration: none;
+    }
+    .app-link:hover h1 { text-decoration: underline; }
 
     .logo:hover {
       transform: scale(1.05);
@@ -288,6 +339,37 @@
       white-space: nowrap;
     }
 
+    .resolution-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: rgba(76, 175, 80, 0.3);
+      border: 1px solid rgba(76, 175, 80, 0.5);
+      font-size: 0.9em;
+      font-weight: 600;
+      color: #66bb6a;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .resolution-display:hover {
+      background: rgba(76, 175, 80, 0.4);
+      border-color: rgba(76, 175, 80, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .resolution-icon {
+      font-size: 1.1em;
+    }
+
+    .resolution-text {
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
     .status-message {
       padding: 12px 20px;
       border-radius: 10px;
@@ -302,52 +384,103 @@
     }
 
     .main-content {
-      display: grid;
-      grid-template-columns: 1fr 2fr; /* Services 33% | PiP Preview 67% */
-      gap: 30px;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      height: calc(100vh - 250px); /* Full height minus header */
+      overflow: hidden; /* Prevent entire screen scrolling */
     }
 
-    /* Responsive: Stack on smaller screens */
+    /* Responsive: Stack on small screens */
     @media (max-width: 900px) {
       .main-content {
-      grid-template-columns: 1fr;
-      }
-      
-      .pip-preview-section {
-        order: -1; /* PiP on top for mobile */
+        flex-direction: column;
+        gap: 10px;
+        height: auto;
       }
     }
 
     .services-section {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 10px;
+      width: 400px; /* Fixed width for services panel */
+      min-width: 400px; /* Prevent shrinking */
+      max-width: 400px; /* Prevent growing */
       background: rgba(0, 0, 0, 0.85);
       padding: 25px;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    
+    /* Responsive: Full width on small screens */
+    @media (max-width: 900px) {
+      .services-section {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 50vh;
+      }
+    }
+    
+    /* Smooth scrolling for services panel */
+    .services-section::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    .services-section::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    
+    .services-section::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+    
+    .services-section::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
 
     /* ========== PiP PREVIEW SECTION ========== */
     .pip-preview-section {
       background: rgba(0, 0, 0, 0.6);
-      border-radius: 20px;
-      padding: 25px;
+      border-radius: 10px;
+      padding: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       flex-direction: column;
-      min-height: 600px;
+      flex: 1; /* Stretch to fill available space */
+      min-height: 0; /* Allow flex shrinking */
+      overflow: hidden;
+    }
+
+    /* Hide preview section in browser mode */
+    .pip-preview-section.browser-mode {
+      display: none;
+    }
+    
+    /* Responsive: Full width on small screens */
+    @media (max-width: 900px) {
+      .pip-preview-section {
+        width: 100%;
+        min-height: 400px;
+      }
     }
 
     .pip-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .pip-header h3 {
-      font-size: 1.8em;
+      font-size: 0.9em;
       font-weight: 700;
       margin: 0;
     }
@@ -356,10 +489,10 @@
       background: rgba(255, 0, 0, 0.3);
       border: 1px solid rgba(255, 0, 0, 0.5);
       color: white;
-      padding: 10px 20px;
-      border-radius: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 1.2em;
+      font-size: 0.6em;
     }
 
     .pip-placeholder {
@@ -369,19 +502,20 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 40px;
+      padding: 20px;
+      min-height: 0; /* Allow flex shrinking */
     }
 
     .pip-placeholder-icon {
-      font-size: 5em;
-      margin-bottom: 20px;
+      font-size: 2.5em;
+      margin-bottom: 10px;
       opacity: 0.5;
     }
 
     .pip-placeholder p {
-      font-size: 1.3em;
+      font-size: 0.65em;
       opacity: 0.7;
-      margin: 10px 0;
+      margin: 5px 0;
     }
 
     .pip-hint {
@@ -393,6 +527,8 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      min-height: 0; /* Allow flex shrinking */
+      overflow: hidden;
     }
 
     .pip-info {
@@ -410,9 +546,38 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 400px;
+      min-height: 0; /* Allow flex shrinking */
       position: relative;
       margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    /* Dedicated viewport box that maintains chosen aspect ratio */
+    .pip-viewport {
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      max-height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .pip-viewport iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 10px;
+      background: #000;
+      display: block; /* Show iframe when embedded */
+    }
+    
+    .pip-viewport iframe.hidden {
+      display: none; /* Hide when no content */
     }
 
     .pip-zone-hint {
@@ -545,22 +710,22 @@
 
     .button-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Fixed 2 columns for TV remote navigation */
+      grid-template-columns: repeat(3, 1fr); /* 3 columns for better screen usage */
       gap: 20px;
     }
 
-    /* 4K: Keep 2 columns, larger gaps */
+    /* 4K: Keep 3 columns, larger gaps */
     @media (min-width: 3840px) {
       .button-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 40px;
       }
     }
 
-    /* 8K: Keep 2 columns, larger gaps */
+    /* 8K: Keep 3 columns, larger gaps */
     @media (min-width: 7680px) {
       .button-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 80px;
       }
     }
@@ -1195,16 +1360,7 @@
       }
 
       .button-grid {
-        grid-template-columns: repeat(2, 1fr); /* Keep 2 columns */
-      }
-
-      .main-content {
-        grid-template-columns: 1fr 2fr; /* Keep 33% / 67% ratio */
-        gap: 30px;
-      }
-
-      .services-section {
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr); /* Keep 3 columns */
       }
 
       .controls-row {
@@ -1234,14 +1390,9 @@
       .header {
         margin-bottom: 20px;
       }
-
-      .main-content {
-        grid-template-columns: 1fr 2fr; /* Keep 33% / 67% ratio */
-        gap: 40px;
-      }
       
       .button-grid {
-        grid-template-columns: repeat(2, 1fr); /* Keep 2 columns */
+        grid-template-columns: repeat(3, 1fr); /* Keep 3 columns */
         gap: 12px;
       }
 
@@ -1316,7 +1467,7 @@
       }
 
       .button-grid {
-        grid-template-columns: repeat(2, 1fr); /* Keep 2 columns on mobile */
+        grid-template-columns: 1fr; /* Single column on mobile */
         gap: 15px;
       }
 
@@ -1444,31 +1595,38 @@
 
   <div class="container">
     <div class="glass-panel">
-      <!-- Header with Title and Status -->
+      <!-- Header with Title (left) and Status/Weather/Time (right) -->
       <div class="header">
-        <div class="header-left">
-          <div class="header-info-item">
-            <div class="header-info-icon">🕐</div>
-            <div>
-              <div class="header-info-main" id="headerTime">--:--</div>
-              <div class="header-info-sub" id="headerDate">Loading...</div>
-            </div>
-          </div>
-        </div>
-        
         <div class="logo-title">
-          <img src="logo.png" alt="MediaBox AI" class="logo" onerror="this.style.display='none'">
-          <h1>MediaBox AI</h1>
+          <a class="app-link" href="https://netlite.network/mediabox" target="_blank" rel="noopener noreferrer">
+            <img src="logo.png" alt="MediaBox AI" class="logo" onerror="this.style.display='none'">
+            <h1>MediaBox AI</h1>
+          </a>
         </div>
         
         <div class="header-right">
-          <div class="build-number" id="buildNumber">Build 1</div>
+          <button class="pip-toggle-btn hidden" id="pipToggleBtn" onclick="togglePiPPanel()" title="Toggle Preview Panel">
+            <span id="pipToggleIcon">📺</span>
+            <span id="pipToggleText">Preview</span>
+          </button>
+          <div class="resolution-display" id="resolutionDisplay" title="Current Screen Resolution">
+            <span class="resolution-icon">📺</span>
+            <span class="resolution-text" id="resolutionText">--</span>
+          </div>
+          <div class="build-number" id="buildNumber">Build 17</div>
           <div class="status-message" id="statusMessage">Ready</div>
           <div class="header-info-item">
             <div class="header-info-icon" id="headerWeatherIcon">🌤️</div>
             <div>
               <div class="header-info-main" id="headerTemperature">--°</div>
               <div class="header-info-sub" id="headerWeatherDesc">Loading...</div>
+            </div>
+          </div>
+          <div class="header-info-item">
+            <div class="header-info-icon">🕐</div>
+            <div>
+              <div class="header-info-main" id="headerTime">--:--</div>
+              <div class="header-info-sub" id="headerDate">Loading...</div>
             </div>
           </div>
         </div>
@@ -1489,6 +1647,11 @@
                 <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" class="service-logo" alt="Amazon Prime" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <span class="button-icon" style="display:none;">🎞️</span>
           <span class="button-label">Amazon Prime</span>
+        </button>
+              <button class="dashboard-button" onclick="launchService('appletv')" oncontextmenu="event.preventDefault(); showPiPPreview('Apple TV+', SERVICE_URLS.appletv); return false;" data-service="appletv">
+                <img src="https://cdn.worldvectorlogo.com/logos/apple-tv-plus-1.svg" class="service-logo" alt="Apple TV+" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <span class="button-icon" style="display:none;">🍎</span>
+          <span class="button-label">Apple TV+</span>
         </button>
               <button class="dashboard-button" onclick="launchService('youtube')" oncontextmenu="event.preventDefault(); showPiPPreview('YouTube', SERVICE_URLS.youtube); return false;" data-service="youtube">
                 <img src="https://cdn.worldvectorlogo.com/logos/youtube-icon-2.svg" class="service-logo" alt="YouTube" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -1564,6 +1727,7 @@
             <!-- PiP Window Zone - positioned window appears here -->
             <div class="pip-window-zone" id="pipZone">
               <p class="pip-zone-hint">Service window will appear here</p>
+            <div class="pip-viewport" id="pipViewport"></div>
               <button class="pip-expand-btn" id="pipExpandBtn" onclick="expandPiP()" style="display: none;">
                 ↗ Expand to Full Screen
               </button>
@@ -1662,13 +1826,74 @@
     const API_BASE = '/api';  // Use relative path since Flask serves both
     let currentVolume = 50;
     let currentLightLevel = 50;
-    let browserMode = false; // false = Container Mode, true = Browser Mode
+    
+    // Detect if running in Electron or Browser
+    const isElectron = typeof window !== 'undefined' && window.electronAPI !== undefined;
+    const isBrowser = !isElectron;
+    
+    let browserMode = isBrowser; // false = Electron Mode, true = Browser Mode
     let hassAutoLogin = false; // false = Manual Login, true = Auto-Login
-    let pipWindow = null;
+    let pipWindow = null; // Electron: native window via IPC; Browser: popup handle
     let currentPiPService = null;
     let lastClickedService = null;
     let lastClickTime = 0;
     let hassCredentials = { username: '', password: '' };
+    let pipAspectMode = 'auto'; // 'auto' | '16x9' | '2351'
+    let pipPanelVisible = true; // PIP panel visibility state
+    
+    // Log environment on load
+    console.log('Environment:', isElectron ? 'Electron' : 'Browser');
+    console.log('Mode:', browserMode ? 'Browser Mode' : 'Electron Mode');
+    
+    // Auto-detect and configure PIP panel based on environment
+    function configurePiPPanel() {
+      const pipToggleBtn = document.getElementById('pipToggleBtn');
+      const pipPreviewSection = document.querySelector('.pip-preview-section');
+      
+      if (isElectron) {
+        // Electron mode - show toggle button and PIP panel
+        if (pipToggleBtn) pipToggleBtn.classList.remove('hidden');
+        if (pipPreviewSection) pipPreviewSection.classList.remove('browser-mode');
+        console.log('PIP Panel: Enabled (Electron mode)');
+      } else {
+        // Browser mode - hide toggle button and PIP panel
+        if (pipToggleBtn) pipToggleBtn.classList.add('hidden');
+        if (pipPreviewSection) pipPreviewSection.classList.add('browser-mode');
+        console.log('PIP Panel: Disabled (Browser mode - PIP not supported)');
+      }
+    }
+    
+    // Toggle PIP panel visibility
+    function togglePiPPanel() {
+      pipPanelVisible = !pipPanelVisible;
+      const pipPreviewSection = document.querySelector('.pip-preview-section');
+      const pipToggleBtn = document.getElementById('pipToggleBtn');
+      const pipToggleIcon = document.getElementById('pipToggleIcon');
+      const pipToggleText = document.getElementById('pipToggleText');
+      
+      if (pipPanelVisible) {
+        // Show panel
+        if (pipPreviewSection) pipPreviewSection.classList.remove('browser-mode');
+        if (pipToggleBtn) pipToggleBtn.classList.add('active');
+        if (pipToggleIcon) pipToggleIcon.textContent = '📺';
+        if (pipToggleText) pipToggleText.textContent = 'Preview ON';
+        showStatus('Preview panel enabled', 'success');
+        console.log('PIP Panel: Shown');
+      } else {
+        // Hide panel
+        if (pipPreviewSection) pipPreviewSection.classList.add('browser-mode');
+        if (pipToggleBtn) pipToggleBtn.classList.remove('active');
+        if (pipToggleIcon) pipToggleIcon.textContent = '📺';
+        if (pipToggleText) pipToggleText.textContent = 'Preview OFF';
+        showStatus('Preview panel disabled', 'info');
+        console.log('PIP Panel: Hidden');
+        
+        // Close any active PIP if panel is hidden
+        if (currentPiPService) {
+          closePiP();
+        }
+      }
+    }
 
     // Service URL mappings
     // Using window.location.hostname for smarthome so it works from any device on the network
@@ -1677,6 +1902,7 @@
       plex: 'http://netlite.community:32400/web/index.html',
       plexamp: 'https://plexamp.com/web?server=netlite.community:32400',  // Plexamp web interface with server
       amazon: 'https://www.primevideo.com/collection/IncludedwithPrime',
+      appletv: 'https://tv.apple.com/',
       youtube: 'https://www.youtube.com',
       spotify: 'https://open.spotify.com',
       smarthome: 'http://' + window.location.hostname + ':8123',
@@ -1731,7 +1957,7 @@
       window.open(hassUrl, '_blank');
     }
 
-    // Toggle between Container Mode and Browser Mode
+    // Toggle between Electron Mode and Browser Mode
     function toggleLaunchMode() {
       browserMode = !browserMode;
       const modeSwitch = document.getElementById('modeSwitch');
@@ -1740,15 +1966,15 @@
       if (browserMode) {
         modeSwitch.classList.add('active');
         modeLabel.textContent = '🌐 Browser Mode';
-        showStatus('Switched to Browser Mode - Services will open in Windows browser', 'success');
+        showStatus('Browser Mode - Services open in new tabs', 'success');
       } else {
         modeSwitch.classList.remove('active');
-        modeLabel.textContent = '🖥️ Container Mode';
-        showStatus('Switched to Container Mode - Services will launch in Docker', 'success');
+        modeLabel.textContent = '🖥️ Electron Mode';
+        showStatus('Electron Mode - Services open in PIP windows', 'success');
       }
       
       // Save preference to localStorage
-      localStorage.setItem('launchMode', browserMode ? 'browser' : 'container');
+      localStorage.setItem('launchMode', browserMode ? 'browser' : 'electron');
     }
 
     // Launch streaming service
@@ -2095,8 +2321,49 @@
         document.getElementById('buildNumber').textContent = `Build ${buildNum.trim()}`;
       } catch (err) {
         console.error('Failed to fetch build number:', err);
-        document.getElementById('buildNumber').textContent = 'Build 1';
+        document.getElementById('buildNumber').textContent = 'Build 17';
       }
+    }
+
+    // Update resolution display
+    function updateResolutionDisplay() {
+      // Get CSS pixels (what the browser reports)
+      const cssWidth = window.innerWidth;
+      const cssHeight = window.innerHeight;
+      
+      // Get device pixel ratio (handles display scaling)
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Calculate actual physical resolution
+      const physicalWidth = Math.round(cssWidth * dpr);
+      const physicalHeight = Math.round(cssHeight * dpr);
+      
+      const resolutionText = document.getElementById('resolutionText');
+      
+      // Determine mode based on CSS width (not physical, for layout purposes)
+      let mode = '';
+      if (cssWidth >= 7680) mode = '8K';
+      else if (cssWidth >= 3840) mode = '4K';
+      else if (cssWidth >= 1920) mode = 'FHD';
+      else if (cssWidth === 1600) mode = 'Proj';  // Projector specific resolution
+      else if (cssWidth >= 1280) mode = 'HD';
+      else if (cssWidth === 1143) mode = 'TabOne+';  // TabOnePlus specific resolution
+      else if (cssWidth >= 768) mode = 'Tab';
+      else mode = 'Mob';
+      
+      // Show both CSS and physical resolution
+      const displayText = dpr > 1 
+        ? `${physicalWidth}x${physicalHeight} (${mode}) [${cssWidth}x${cssHeight}]`
+        : `${cssWidth}x${cssHeight} (${mode})`;
+      
+      // Update display
+      resolutionText.textContent = displayText;
+      
+      // Log to console for debugging
+      console.log(`CSS Resolution: ${cssWidth}x${cssHeight}`);
+      console.log(`Physical Resolution: ${physicalWidth}x${physicalHeight}`);
+      console.log(`Device Pixel Ratio: ${dpr}`);
+      console.log(`Mode: ${mode}`);
     }
 
     // Initialize and start updates
@@ -2111,21 +2378,45 @@
       // Fetch build number
       fetchBuildNumber();
       
+      // Update resolution display
+      updateResolutionDisplay();
+      
       // Update weather every 10 minutes
       setInterval(fetchWeather, 600000);
       
       // Update build number every 30 seconds (to catch changes)
       setInterval(fetchBuildNumber, 30000);
+      
+      // Update resolution on window resize
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateResolutionDisplay, 250);
+      });
     }
 
     // Restore saved preferences
     function restoreLaunchMode() {
-      // Restore launch mode preference
+      // Restore launch mode preference (only if not auto-detected)
       const savedMode = localStorage.getItem('launchMode');
       if (savedMode === 'browser') {
         browserMode = true;
         document.getElementById('modeSwitch').classList.add('active');
         document.getElementById('modeLabel').textContent = '🌐 Browser Mode';
+      } else if (savedMode === 'electron') {
+        browserMode = false;
+        document.getElementById('modeSwitch').classList.remove('active');
+        document.getElementById('modeLabel').textContent = '🖥️ Electron Mode';
+      } else {
+        // Auto-detect mode based on environment
+        if (isElectron) {
+          browserMode = false;
+          document.getElementById('modeLabel').textContent = '🖥️ Electron Mode';
+        } else {
+          browserMode = true;
+          document.getElementById('modeSwitch').classList.add('active');
+          document.getElementById('modeLabel').textContent = '🌐 Browser Mode';
+        }
       }
       
       // Restore Home Assistant auto-login preference
@@ -2185,17 +2476,41 @@
       const buttons = Array.from(document.querySelectorAll('.dashboard-button'));
       const currentIndex = buttons.findIndex(btn => btn === document.activeElement);
       
-      // Fixed 2-column grid for TV navigation
-      const cols = 2;
+      // 3-column grid for TV navigation
+      const cols = 3;
       
       let nextIndex = currentIndex;
       
       switch(e.key) {
         case 'ArrowRight':
-          nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % buttons.length;
+          // Move right, wrap to next row if at end of row
+          if (currentIndex === -1) {
+            nextIndex = 0;
+          } else {
+            const currentRow = Math.floor(currentIndex / cols);
+            const currentCol = currentIndex % cols;
+            if (currentCol < cols - 1 && currentIndex + 1 < buttons.length) {
+              nextIndex = currentIndex + 1;
+            } else {
+              // Wrap to start of next row
+              nextIndex = Math.min((currentRow + 1) * cols, buttons.length - 1);
+            }
+          }
           break;
         case 'ArrowLeft':
-          nextIndex = currentIndex === -1 ? 0 : (currentIndex - 1 + buttons.length) % buttons.length;
+          // Move left, wrap to previous row if at start of row
+          if (currentIndex === -1) {
+            nextIndex = 0;
+          } else {
+            const currentRow = Math.floor(currentIndex / cols);
+            const currentCol = currentIndex % cols;
+            if (currentCol > 0) {
+              nextIndex = currentIndex - 1;
+            } else {
+              // Wrap to end of previous row
+              nextIndex = Math.max(currentRow * cols - 1, 0);
+            }
+          }
           break;
         case 'ArrowDown':
           nextIndex = currentIndex === -1 ? 0 : Math.min(currentIndex + cols, buttons.length - 1);
@@ -2222,6 +2537,28 @@
       fetchHassCredentials();
       refreshAudioDevices();
       initializeInfoBar();
+      
+      // Configure PIP panel based on environment (Electron vs Browser)
+      configurePiPPanel();
+      
+      // Setup PIP window event listeners
+      if (window.electronAPI) {
+        window.electronAPI.onPiPWindowClosed(() => {
+          console.log('PIP window closed');
+          // Reset UI if needed
+          if (currentPiPService) {
+            closePiP();
+          }
+        });
+        
+        window.electronAPI.onPiPWindowMoved((event, bounds) => {
+          console.log('PIP window moved:', bounds);
+        });
+        
+        window.electronAPI.onPiPWindowResized((event, bounds) => {
+          console.log('PIP window resized:', bounds);
+        });
+      }
       
       // Auto-focus first button for TV remote navigation
       setTimeout(() => {
@@ -2261,8 +2598,71 @@
     });
 
     // ========== PIP WINDOW MANAGEMENT ==========
-    function showPiPPreview(serviceName, url) {
+    function getCornerBounds(corner) {
+      const width = 480;
+      const height = 270;
+      const margin = 16;
+      const sw = window.screen.availWidth;
+      const sh = window.screen.availHeight;
+      const positions = {
+        tl: { left: margin, top: margin },
+        tr: { left: sw - width - margin, top: margin },
+        bl: { left: margin, top: sh - height - margin },
+        br: { left: sw - width - margin, top: sh - height - margin }
+      };
+      const pos = positions.br;
+      return { width, height, left: pos.left, top: pos.top };
+    }
+
+    function browserSnapPiP(corner) {
+      if (pipWindow && !pipWindow.closed) {
+        const width = 480;
+        const height = 270;
+        const margin = 16;
+        const sw = window.screen.availWidth;
+        const sh = window.screen.availHeight;
+        const map = {
+          tl: { left: margin, top: margin },
+          tr: { left: sw - width - margin, top: margin },
+          bl: { left: margin, top: sh - height - margin },
+          br: { left: sw - width - margin, top: sh - height - margin }
+        };
+        const pos = map[corner] || map.br;
+        try {
+          pipWindow.resizeTo(width, height);
+          pipWindow.moveTo(pos.left, pos.top);
+          pipWindow.focus();
+        } catch (e) {
+          console.warn('[PiP] Browser snap failed:', e);
+        }
+      }
+    }
+
+    function toggleMiniGeneric() {
+      if (isElectron && window.electronAPI) {
+        window.electronAPI.togglePiPMini();
+      } else if (pipWindow && !pipWindow.closed) {
+        // Toggle between mini and near-fullscreen popup
+        try {
+          const sw = window.screen.availWidth;
+          const sh = window.screen.availHeight;
+          if (Math.abs(pipWindow.outerWidth - 480) < 20 && Math.abs(pipWindow.outerHeight - 270) < 20) {
+            pipWindow.moveTo(0, 0);
+            pipWindow.resizeTo(sw, sh);
+          } else {
+            browserSnapPiP('br');
+          }
+        } catch (e) {
+          console.warn('[PiP] Browser toggle failed:', e);
+        }
+      }
+    }
+
+    async function showPiPPreview(serviceName, url) {
       currentPiPService = serviceName;
+      
+      console.log(`[PiP] Opening ${serviceName} with URL: ${url}`);
+      console.log(`[PiP] isElectron: ${isElectron}, electronAPI: ${!!window.electronAPI}`);
       
       // Hide placeholder, show active PiP
       document.getElementById('pipPlaceholder').style.display = 'none';
@@ -2271,24 +2671,103 @@
       document.getElementById('pipTitle').textContent = `Preview: ${serviceName}`;
       document.getElementById('pipCloseBtn').style.display = 'block';
       
-      // Calculate position for PiP zone
-      const pipZone = document.getElementById('pipZone');
-      const rect = pipZone.getBoundingClientRect();
-      
-      // Open service in positioned window
-      const windowFeatures = `width=${Math.floor(rect.width)},height=${Math.floor(rect.height)},left=${Math.floor(window.screenX + rect.left)},top=${Math.floor(window.screenY + rect.top)},resizable=yes,scrollbars=yes`;
-      
-      pipWindow = window.open(url, serviceName + '_pip', windowFeatures);
-      
-      // Show hint to user
-      document.querySelector('.pip-zone-hint').textContent = `${serviceName} is opening in positioned window...`;
-      document.getElementById('pipExpandBtn').style.display = 'block';
-      
-      console.log(`PiP Preview: ${serviceName} window opened`);
+      // Check if running in Electron or Browser
+      if (isElectron && window.electronAPI) {
+        // Electron Mode - Use separate BrowserWindow positioned over preview box
+        console.log(`[PiP] Electron mode - creating positioned window`);
+        
+        // Check if this is a DRM service
+        const isDRMService = ['netflix', 'amazon', 'appletv', 'youtube'].includes(serviceName.toLowerCase());
+        
+        if (isDRMService) {
+          // Show warning about Widevine
+          console.log(`[PiP] DRM service detected - Widevine not available`);
+          document.querySelector('.pip-zone-hint').textContent = `Widevine not available - Toggle PIP OFF for browser mode`;
+          showStatus(`Widevine not available - Use Browser Mode for ${serviceName}`, 'info');
+        }
+        
+        // Ensure best-fitting aspect before sizing
+        applyAutoPiPAspect();
+
+        // Get viewport bounds for PIP window
+        const pipViewport = document.getElementById('pipViewport');
+        if (!pipViewport) {
+          console.error('[PiP] Viewport element not found!');
+          showStatus('Preview box not found', 'error');
+          return;
+        }
+        
+        const rect = pipViewport.getBoundingClientRect();
+        
+        const bounds = {
+          width: Math.floor(rect.width),
+          height: Math.floor(rect.height),
+          x: Math.floor(rect.left),
+          y: Math.floor(rect.top)
+        };
+        
+        console.log(`[PiP] Creating window at bounds:`, bounds);
+        
+        // Create PIP window via Electron IPC
+        try {
+          await window.electronAPI.createPiPWindow(url, serviceName, bounds);
+          
+          // Show success message
+          const successMessage = isDRMService 
+            ? `${serviceName} opened - Widevine may not be available`
+            : `${serviceName} preview opened`;
+          document.querySelector('.pip-zone-hint').textContent = successMessage;
+          showStatus(successMessage, 'success');
+          
+          console.log(`[PiP] Preview window created successfully`);
+        } catch (error) {
+          console.error('[PiP] Failed to create preview window:', error);
+          showStatus(`Failed to open ${serviceName} preview`, 'error');
+          document.querySelector('.pip-zone-hint').textContent = `Failed to open ${serviceName} preview`;
+          document.querySelector('.pip-zone-hint').style.display = 'block';
+        }
+      } else {
+        // Browser Mode - Open mini popup styled like our Electron mini-player
+        console.log(`[PiP] Browser mode - opening mini popup`);
+
+        // Show message about Widevine
+        const isDRMService = ['netflix', 'amazon', 'appletv', 'youtube'].includes(serviceName.toLowerCase());
+        const message = isDRMService 
+          ? `Opening Browser - Widevine Support not enabled in Electron`
+          : `${serviceName} opened in browser`;
+
+        const b = getCornerBounds('br');
+        const features = `popup=1,toolbar=0,location=0,menubar=0,status=0,scrollbars=0,resizable=1,width=${b.width},height=${b.height},left=${b.left},top=${b.top}`;
+        pipWindow = window.open(url, serviceName + '_mini', features);
+
+        if (pipWindow) {
+          // Try to ensure size/position
+          try {
+            pipWindow.resizeTo(b.width, b.height);
+            pipWindow.moveTo(b.left, b.top);
+          } catch {}
+
+          document.querySelector('.pip-zone-hint').textContent = message;
+          showStatus(message, isDRMService ? 'info' : 'success');
+        } else {
+          document.querySelector('.pip-zone-hint').textContent = `Pop-up blocked. Allow pop-ups to preview ${serviceName}`;
+          showStatus(`Pop-up blocked. Allow pop-ups to preview ${serviceName}`, 'error');
+        }
+      }
     }
 
-    function closePiP() {
-      if (pipWindow && !pipWindow.closed) {
+    async function closePiP() {
+      // Close PIP window
+      if (isElectron && window.electronAPI) {
+        // Close via Electron IPC
+        try {
+          await window.electronAPI.closePiPWindow();
+          console.log('[PiP] Preview window closed');
+        } catch (error) {
+          console.error('[PiP] Failed to close preview window:', error);
+        }
+      } else if (pipWindow && !pipWindow.closed) {
+        // Close browser tab
         pipWindow.close();
       }
       
@@ -2304,45 +2783,135 @@
       currentPiPService = null;
     }
 
-    function expandPiP() {
+    async function expandPiP() {
       if (currentPiPService) {
-        const url = SERVICE_URLS[currentPiPService.toLowerCase()];
-        
-        // Close PiP window
-        if (pipWindow && !pipWindow.closed) {
-          pipWindow.close();
+        if (isElectron && window.electronAPI) {
+          // Expand PIP window to full screen via Electron IPC
+          try {
+            await window.electronAPI.expandPiPWindow();
+            showStatus(`${currentPiPService} expanded to full screen`, 'success');
+            
+            // Reset PiP UI after expansion
+            closePiP();
+          } catch (error) {
+            console.error('[PiP] Failed to expand preview window:', error);
+            showStatus(`Failed to expand ${currentPiPService}`, 'error');
+          }
+        } else {
+          // Browser mode - just close and let user interact with tab
+          showStatus(`${currentPiPService} is in browser tab - interact with it directly`, 'info');
+          closePiP();
         }
-        
-        // Open full screen
-        window.open(url, currentPiPService + '_fullscreen', 'fullscreen=yes,width=' + screen.width + ',height=' + screen.height);
-        
-        // Reset PiP UI
-        closePiP();
       }
     }
 
-    function repositionPiP() {
+    async function repositionPiP() {
       if (currentPiPService) {
-        const url = SERVICE_URLS[currentPiPService.toLowerCase()];
-        
-        // Close existing window
-        if (pipWindow && !pipWindow.closed) {
-          pipWindow.close();
+        if (isElectron && window.electronAPI) {
+          // Re-evaluate aspect and get new bounds
+          applyAutoPiPAspect();
+          const pipViewport = document.getElementById('pipViewport');
+          const rect = pipViewport.getBoundingClientRect();
+          
+          const bounds = {
+            width: Math.floor(rect.width),
+            height: Math.floor(rect.height),
+            x: Math.floor(rect.left),
+            y: Math.floor(rect.top)
+          };
+          
+          // Reposition PIP window via Electron IPC
+          try {
+            await window.electronAPI.repositionPiPWindow(bounds);
+            showStatus(`${currentPiPService} window repositioned`, 'success');
+            console.log(`[PiP] Window repositioned: ${currentPiPService}`);
+          } catch (error) {
+            console.error('[PiP] Failed to reposition preview window:', error);
+            showStatus(`Failed to reposition ${currentPiPService}`, 'error');
+          }
+        } else {
+          showStatus('Reposition only available in Electron mode', 'info');
         }
-        
-        // Reopen in PiP zone
-        const pipZone = document.getElementById('pipZone');
-        const rect = pipZone.getBoundingClientRect();
-        
-        const windowFeatures = `width=${Math.floor(rect.width)},height=${Math.floor(rect.height)},left=${Math.floor(window.screenX + rect.left)},top=${Math.floor(window.screenY + rect.top)},resizable=yes,scrollbars=yes`;
-        
-        pipWindow = window.open(url, currentPiPService + '_pip', windowFeatures);
-        
-        console.log(`PiP Repositioned: ${currentPiPService}`);
       }
     }
+
+    // Global hotkeys for mini controls (Electron and Browser modes)
+    window.addEventListener('keydown', (e) => {
+      if (!(e.ctrlKey && e.shiftKey)) return;
+      const key = e.key.toLowerCase();
+      if (key === 'm') {
+        e.preventDefault();
+        toggleMiniGeneric();
+      }
+      if (['1','2','3','4'].includes(key)) {
+        e.preventDefault();
+        const map = { '1': 'tl', '2': 'tr', '3': 'bl', '4': 'br' };
+        const corner = map[key];
+        if (isElectron && window.electronAPI) {
+          window.electronAPI.snapPiPCorner(corner);
+        } else {
+          browserSnapPiP(corner);
+        }
+      }
+    });
+
+
+    // Choose between 16:9 and 2.35:1 automatically based on available space
+    function applyAutoPiPAspect() {
+      const zone = document.getElementById('pipZone');
+      const viewport = document.getElementById('pipViewport');
+      if (!zone || !viewport) return;
+
+      if (pipAspectMode === '16x9') {
+        viewport.style.setProperty('--pip-aspect', '16 / 9');
+        return;
+      }
+      if (pipAspectMode === '2351') {
+        viewport.style.setProperty('--pip-aspect', '2.35 / 1');
+        return;
+      }
+
+      // Auto mode: pick the aspect that yields the largest area without exceeding height
+      const availableWidth = zone.clientWidth;
+      const availableHeight = zone.clientHeight;
+
+      const height16by9 = availableWidth * (9 / 16);
+      const height2351 = availableWidth / 2.35; // 2.35:1 cinema scope
+
+      const fits16 = height16by9 <= availableHeight;
+      const fits235 = height2351 <= availableHeight;
+
+      // Prefer the one that uses more of the available height; if both overflow, fall back to 16:9
+      let chosen = '16 / 9';
+      if (fits16 && fits235) {
+        chosen = (availableHeight - height2351) < (availableHeight - height16by9) ? '2.35 / 1' : '16 / 9';
+      } else if (!fits16 && fits235) {
+        chosen = '2.35 / 1';
+      } else if (fits16 && !fits235) {
+        chosen = '16 / 9';
+      } else {
+        // both too tall at full width; still set 16:9 and let CSS scale
+        chosen = '16 / 9';
+      }
+
+      viewport.style.setProperty('--pip-aspect', chosen);
+    }
+
+    // Re-evaluate aspect on window resize/orientation changes
+    window.addEventListener('resize', () => {
+      applyAutoPiPAspect();
+      // Reposition PIP window if active and in Electron mode
+      if (currentPiPService && isElectron && window.electronAPI) {
+        repositionPiP();
+      }
+    });
+
 
 
   </script>
+
+  <!-- Responsive Navigation & Utilities -->
+  <script src="responsive.js"></script>
+
 </body>
 </html>

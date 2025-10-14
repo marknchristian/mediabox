@@ -863,6 +863,14 @@
       text-align: center;
     }
 
+    /* HD mode tweaks: make service text labels and build number 50% smaller */
+    .mode-hd .button-label {
+      font-size: 0.55em;
+    }
+    .mode-hd .header .build-number {
+      font-size: 0.75em !important;
+    }
+
     .controls-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -2358,6 +2366,15 @@
       
       // Update display
       resolutionText.textContent = displayText;
+
+      // Toggle HD mode class on body for CSS tweaks
+      try {
+        if (cssWidth >= 1280 && cssWidth < 1920) {
+          document.body.classList.add('mode-hd');
+        } else {
+          document.body.classList.remove('mode-hd');
+        }
+      } catch {}
       
       // Log to console for debugging
       console.log(`CSS Resolution: ${cssWidth}x${cssHeight}`);

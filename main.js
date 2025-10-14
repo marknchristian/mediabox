@@ -1,8 +1,37 @@
 const { app, BrowserWindow, ipcMain, screen, globalShortcut } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 let mainWindow;
 let pipWindow = null;
+
+// Attempt to auto-configure Widevine CDM from Chrome/Edge on Windows
+try {
+  if (process.platform === 'win32') {
+    const localAppData = process.env.LOCALAPPDATA || '';
+    const chromeWidevine = path.join(localAppData, 'Google', 'Chrome', 'User Data', 'WidevineCdm');
+    const edgeWidevine = path.join(localAppData, 'Microsoft', 'Edge', 'User Data', 'WidevineCdm');
+    const baseDir = fs.existsSync(chromeWidevine) ? chromeWidevine : (fs.existsSync(edgeWidevine) ? edgeWidevine : null);
+
+    if (baseDir) {
+      const versions = fs.readdirSync(baseDir).filter(v => /^(\d+\.){3}\d+$/.test(v));
+      versions.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      const version = versions[versions.length - 1];
+      if (version) {
+        const dllPath = path.join(baseDir, version, '_platform_specific', 'win_x64', 'widevinecdm.dll');
+        if (fs.existsSync(dllPath)) {
+          app.commandLine.appendSwitch('widevine-cdm-path', dllPath);
+          app.commandLine.appendSwitch('widevine-cdm-version', version);
+          console.log('[Main] Widevine configured from:', dllPath, 'version:', version);
+        }
+      }
+    } else {
+      console.warn('[Main] WidevineCdm folder not found in Chrome/Edge profile');
+    }
+  }
+} catch (e) {
+  console.warn('[Main] Widevine auto-config failed:', e);
+}
 
 // Enable protected content playback for DRM (Netflix, Prime Video, etc.)
 app.commandLine.appendSwitch('enable-features', 'WidevineCdm');

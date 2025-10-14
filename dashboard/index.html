@@ -2623,7 +2623,7 @@
         }
 
         info['EME API Available'] = ('requestMediaKeySystemAccess' in navigator) ? 'Yes' : 'No';
-        info['Media Keys API'] = ('mediaKeys' in navigator.mediaDevices) ? 'Yes' : 'No';
+        info['Media Keys API'] = (navigator.mediaDevices && 'mediaKeys' in navigator.mediaDevices) ? 'Yes' : 'No';
         
         // Test Widevine support
         let widevineStatus = 'Not Tested';

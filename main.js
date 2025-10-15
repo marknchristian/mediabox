@@ -267,14 +267,18 @@ ipcMain.handle('create-pip-window', async (event, { url, serviceName, bounds }) 
         webSecurity: true
       },
       backgroundColor: '#000000',
-      frame: false,            // treat as a mini-player surface
+      frame: true,             // Enable frame with min/max/close buttons
       transparent: false,
       alwaysOnTop: true,
       resizable: true,
       movable: true,
-      hasShadow: false,
-      skipTaskbar: true,
-      title: `${serviceName} - Mini Player`
+      hasShadow: true,         // Add subtle shadow for better visibility
+      skipTaskbar: false,      // Show in taskbar for easier access
+      title: `${serviceName} - Mini Player`,
+      titleBarStyle: 'default', // Standard Windows title bar
+      minimizable: true,
+      maximizable: true,
+      closable: true
     });
 
     // Set a modern desktop UA that Netflix supports (avoid mobile UAs)

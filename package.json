@@ -1,6 +1,6 @@
 {
   "name": "mediabox-v2-electron",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "MediaBox AI - Electron Desktop Dashboard",
   "main": "main.js",
   "scripts": {

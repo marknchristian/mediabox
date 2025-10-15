@@ -32,3 +32,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   }
 });
 
+// Expose safe window control API
+contextBridge.exposeInMainWorld('windowControl', {
+  minimize: () => ipcRenderer.invoke('window-control', 'minimize'),
+  maximize: () => ipcRenderer.invoke('window-control', 'maximize'),
+  close: () => ipcRenderer.invoke('window-control', 'close'),
+  toggleFullscreen: () => ipcRenderer.invoke('window-control', 'toggle-fullscreen')
+});

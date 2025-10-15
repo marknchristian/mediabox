@@ -165,6 +165,19 @@
       overflow: hidden;
     }
 
+    /* 4K (3840x2160): widen outer box and reduce horizontal padding; shrink time font */
+    @media (min-width: 3840px) {
+      .container {
+        max-width: 2304px; /* 20% wider than 1920px to better utilize 4K width */
+      }
+      .glass-panel {
+        padding: 30px 20px; /* keep vertical padding, reduce horizontal padding */
+      }
+      .header-info-main { /* Time display */
+        font-size: 0.7em; /* 50% smaller than base 1.4em on 4K */
+      }
+    }
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -220,6 +233,47 @@
 
     .pip-toggle-btn.hidden {
       display: none;
+    }
+
+    /* Window controls (Electron) */
+    .window-controls {
+      display: none; /* shown only when running in Electron */
+      align-items: center;
+      gap: 8px;
+      margin-right: 8px;
+    }
+    .window-control-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      line-height: 1;
+      min-width: 36px;
+      text-align: center;
+    }
+    .window-control-btn:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: translateY(-1px);
+    }
+    .window-control-btn.close {
+      background: rgba(244, 67, 54, 0.25);
+      border-color: rgba(244, 67, 54, 0.5);
+    }
+    .window-control-btn.close:hover {
+      background: rgba(244, 67, 54, 0.4);
+    }
+    @media (min-width: 3840px) {
+      .window-control-btn {
+        padding: 10px 14px;
+        font-size: 0.8em;
+        border-width: 2px;
+      }
     }
 
     .header-info-item {
@@ -1656,6 +1710,11 @@
         </div>
         
         <div class="header-right">
+          <div class="window-controls" id="windowControls">
+            <button class="window-control-btn" id="btnMin" title="Minimize" onclick="windowControl && windowControl.minimize()">—</button>
+            <button class="window-control-btn" id="btnMax" title="Maximize/Restore" onclick="windowControl && windowControl.maximize()">▢</button>
+            <button class="window-control-btn close" id="btnClose" title="Close" onclick="windowControl && windowControl.close()">×</button>
+          </div>
           <button class="pip-toggle-btn hidden" id="pipToggleBtn" onclick="togglePiPPanel()" title="Toggle Preview Panel">
             <span id="pipToggleIcon">📺</span>
             <span id="pipToggleText">Preview</span>
@@ -2461,6 +2520,16 @@
       document.getElementById('headerTime').textContent = timeStr;
       document.getElementById('headerDate').textContent = dateStr;
     }
+
+    // Show window controls only in Electron
+    (function() {
+      try {
+        if (window.windowControl && window.electronAPI) {
+          const el = document.getElementById('windowControls');
+          if (el) el.style.display = 'flex';
+        }
+      } catch (e) {}
+    })();
 
     // Fetch weather data
     async function fetchWeather() {

@@ -180,6 +180,36 @@ app.on('will-quit', () => {
   }
 });
 
+// Window control handlers for main window
+ipcMain.handle('window-control', async (event, action) => {
+  try {
+    if (!mainWindow || mainWindow.isDestroyed()) return { success: false, error: 'No main window' };
+    switch (action) {
+      case 'minimize':
+        mainWindow.minimize();
+        return { success: true };
+      case 'maximize':
+        if (mainWindow.isMaximized()) {
+          mainWindow.unmaximize();
+        } else {
+          mainWindow.maximize();
+        }
+        return { success: true, maximized: mainWindow.isMaximized() };
+      case 'close':
+        mainWindow.close();
+        return { success: true };
+      case 'toggle-fullscreen':
+        mainWindow.setFullScreen(!mainWindow.isFullScreen());
+        return { success: true, fullscreen: mainWindow.isFullScreen() };
+      default:
+        return { success: false, error: 'Unknown action' };
+    }
+  } catch (err) {
+    console.error('[Main] window-control failed:', err);
+    return { success: false, error: err.message };
+  }
+});
+
 // Open external URL in system browser
 ipcMain.handle('open-external', async (event, url) => {
   try {

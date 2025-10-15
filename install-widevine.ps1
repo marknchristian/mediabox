@@ -29,12 +29,19 @@ if (Test-Path $chromeWidevinePath) {
 }
 
 # Step 2: Find the version folder
+Write-Host "[DEBUG] Checking contents of: $widevinePath" -ForegroundColor Cyan
+$allItems = Get-ChildItem $widevinePath
+Write-Host "[DEBUG] Found items:" -ForegroundColor Cyan
+$allItems | ForEach-Object { Write-Host "  - $($_.Name) ($($_.Mode))" -ForegroundColor Gray }
+
 $versionFolders = Get-ChildItem $widevinePath -Directory
 
 if ($versionFolders.Count -eq 0) {
     Write-Host "[ERROR] No Widevine version found!" -ForegroundColor Red
-    Write-Host "Please open $browserName and go to: edge://components/" -ForegroundColor Yellow
+    Write-Host "The WidevineCdm folder exists but contains no version directories." -ForegroundColor Yellow
+    Write-Host "Please open $browserName and go to: chrome://components/" -ForegroundColor Yellow
     Write-Host "Then click 'Check for update' on Widevine Content Decryption Module" -ForegroundColor Yellow
+    Write-Host "Wait for it to download completely, then run this script again." -ForegroundColor Yellow
     exit 1
 }
 

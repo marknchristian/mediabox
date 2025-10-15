@@ -252,3 +252,5 @@ ENVIRONMENT:
 
 **Next Steps**: Test the app in both Electron and browser environments to verify auto-detection works correctly.
 
+
+

@@ -110,3 +110,5 @@ Potential improvements for future versions:
 - Add PIP window snapping to edges
 - Add multi-PIP support (multiple previews)
 
+
+

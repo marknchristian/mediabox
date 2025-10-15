@@ -29,6 +29,49 @@ HASS_TOKEN = os.environ.get('HASS_TOKEN', '')  # Long-lived access token (recomm
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, script_dir)
 
+# ==================== OS DETECTION ====================
+
+def detect_os():
+    """Detect the operating system type"""
+    try:
+        # Check for Android
+        if os.path.exists('/system/build.prop'):
+            return 'android'
+        
+        # Check for Linux
+        if os.path.exists('/proc/version'):
+            with open('/proc/version', 'r') as f:
+                version = f.read().lower()
+                if 'android' in version:
+                    return 'android'
+                return 'linux'
+        
+        # Check for Windows
+        if os.name == 'nt':
+            return 'windows'
+        
+        # Check for macOS
+        if sys.platform == 'darwin':
+            return 'macos'
+        
+        return 'unknown'
+    except:
+        return 'unknown'
+
+def is_android_app_installed(package_name):
+    """Check if an Android app is installed using adb or pm"""
+    try:
+        # Try using pm (Package Manager) command
+        result = subprocess.run(
+            ['pm', 'list', 'packages', package_name],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        return result.returncode == 0 and package_name in result.stdout
+    except:
+        return False
+
 # Define a minimal AudioSwitcher class for when audio is not available
 class AudioSwitcher:
     """Minimal audio switcher that handles missing audio gracefully"""
@@ -210,9 +253,78 @@ def launch_service(service):
                 }), 500
         
         elif service == 'livetv':
-            # Launch IPTV application using VLC
+            # Launch IPTV application - Android or Linux
             try:
-                # Use the IPTV launcher script for better functionality
+                # Detect operating system
+                os_type = detect_os()
+                logger.info(f"Detected OS: {os_type}")
+                
+                # Android-specific handling
+                if os_type == 'android':
+                    # Check if MyTvOnline+ is installed
+                    app_name = 'MyTvOnline+'
+                    mytv_package = 'com.stalkermiddleware.mytvonline2'  # MyTvOnline+ package name
+                    
+                    logger.info(f"Invoking {app_name} on Android platform")
+                    print(f"[INFO] Invoking {app_name} on Android platform")
+                    
+                    if is_android_app_installed(mytv_package):
+                        # MyTvOnline+ is installed, launch it
+                        logger.info(f"{app_name} found, launching app")
+                        print(f"[INFO] {app_name} found, launching app")
+                        try:
+                            subprocess.Popen([
+                                'am', 'start', '-n',
+                                f'{mytv_package}/.MainActivity'
+                            ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                            
+                            logger.info(f"{app_name} launched successfully")
+                            print(f"[SUCCESS] {app_name} launched successfully")
+                            return jsonify({
+                                'success': True,
+                                'message': f'{app_name} launched successfully',
+                                'platform': 'android'
+                            })
+                        except Exception as e:
+                            logger.error(f"Failed to launch {app_name}: {e}")
+                            print(f"[ERROR] Failed to launch {app_name}: {e}")
+                            # Fall through to Play Store
+                    
+                    # MyTvOnline+ not installed, open Play Store
+                    logger.warning(f"{app_name} not installed, opening Play Store")
+                    print(f"[WARNING] {app_name} not installed, opening Play Store")
+                    try:
+                        # Try to open Play Store to MyTvOnline+ page
+                        subprocess.Popen([
+                            'am', 'start', '-a', 'android.intent.action.VIEW',
+                            '-d', 'market://details?id=com.stalkermiddleware.mytvonline2'
+                        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        
+                        logger.info(f"Play Store opened for {app_name} installation")
+                        print(f"[INFO] Play Store opened for {app_name} installation")
+                        return jsonify({
+                            'success': True,
+                            'message': f'Install {app_name} - Play Store opened',
+                            'platform': 'android',
+                            'action': 'install'
+                        })
+                    except Exception as e:
+                        logger.error(f"Failed to open Play Store: {e}")
+                        print(f"[ERROR] Failed to open Play Store: {e}")
+                        # Fall through to error message
+                    
+                    # If we get here, couldn't open Play Store
+                    logger.error(f"Could not open Play Store for {app_name}")
+                    print(f"[ERROR] Could not open Play Store for {app_name}")
+                    return jsonify({
+                        'success': False,
+                        'error': f'Install {app_name} - Could not open Play Store',
+                        'platform': 'android',
+                        'action': 'install_required'
+                    }), 503
+                
+                # Non-Android systems - use VLC
+                logger.info("Non-Android system, launching VLC")
                 iptv_script = os.path.join(script_dir, 'iptv-launcher.py')
                 result = subprocess.run([
                     'python3', iptv_script, '--vlc'
@@ -222,7 +334,8 @@ def launch_service(service):
                     logger.info("IPTV (VLC) launched successfully")
                     return jsonify({
                         'success': True,
-                        'message': 'Live TV (IPTV) launched successfully with VLC'
+                        'message': 'Live TV (IPTV) launched successfully with VLC',
+                        'platform': os_type
                     })
                 else:
                     logger.warning("IPTV launcher failed, trying direct VLC launch")
@@ -232,7 +345,8 @@ def launch_service(service):
                     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     return jsonify({
                         'success': True,
-                        'message': 'Live TV (IPTV) launched with VLC via fallback method'
+                        'message': 'Live TV (IPTV) launched with VLC via fallback method',
+                        'platform': os_type
                     })
                     
             except subprocess.TimeoutExpired:

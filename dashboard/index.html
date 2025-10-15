@@ -2200,11 +2200,32 @@
           return;
         }
         
+      // Live TV always uses backend API for proper MyTvOnline+ handling
+      if (service === 'livetv') {
+        showStatus('Launching Live TV...', 'info');
+        fetch(`${API_BASE}/launch/${service}`, {
+          method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showStatus(data.message || 'Live TV launched successfully', 'success');
+          } else {
+            showStatus(data.error || 'Failed to launch Live TV', 'error');
+          }
+        })
+        .catch(err => {
+          showStatus(`Failed to launch Live TV: ${err.message}`, 'error');
+          console.error(err);
+        });
+        return;
+      }
+      
       // Android native app override for supported services
       if (isAndroidBrowser() && (
         service === 'plex' || service === 'plexamp' || service === 'amazon' || service === 'appletv' ||
         service === 'netflix' || service === 'youtube' || service === 'spotify' || service === 'telegram' ||
-        service === 'smarthome' || service === 'news' || service === 'calendar' || service === 'livetv'
+        service === 'smarthome' || service === 'news' || service === 'calendar'
       )) {
         openAndroidAppOrWeb(service);
         return;

@@ -111,10 +111,10 @@ function createWindow() {
     console.warn('[Main] setContentProtection on mainWindow failed:', err);
   }
 
-  // Open DevTools in development
-  if (process.argv.includes('--dev')) {
-    mainWindow.webContents.openDevTools();
-  }
+  // Open DevTools in development (DISABLED for production-like experience)
+  // if (process.argv.includes('--dev')) {
+  //   mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.on('closed', () => {
     mainWindow = null;

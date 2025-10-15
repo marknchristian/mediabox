@@ -85,7 +85,8 @@ Write-Host ""
 # Start Electron with proper npm path
 Write-Host "Starting Electron app..." -ForegroundColor Green
 try {
-    & npm run dev
+    # Use cmd to run npm to avoid PowerShell parsing issues
+    cmd /c "npm run dev"
 } catch {
     Write-Host "[ERROR] Failed to start Electron app!" -ForegroundColor Red
     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
@@ -95,7 +96,7 @@ try {
     $npmPath = "C:\Program Files\nodejs\npm.cmd"
     if (Test-Path $npmPath) {
         Write-Host "Using npm from: $npmPath" -ForegroundColor Gray
-        & $npmPath run dev
+        cmd /c "`"$npmPath`" run dev"
     } else {
         Write-Host "[ERROR] Could not find npm. Please check Node.js installation." -ForegroundColor Red
         exit 1

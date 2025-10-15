@@ -159,7 +159,7 @@ SERVICE_URLS = {
     'amazon': 'https://www.primevideo.com/collection/IncludedwithPrime',
     'youtube': 'https://www.youtube.com',
     'plex': 'http://netlite.community:32400/web/index.html',  # Remote Plex server
-    'livetv': 'iptv',  # Will launch Hypnotix
+    'iptv': 'iptv',  # Will launch platform-specific IPTV app
     'smarthome': 'http://localhost:8123',  # Home Assistant
     'news': 'https://www.bbc.com/news',  # BBC News - clean, TV-friendly layout
     'telegram': 'https://web.telegram.org',
@@ -252,15 +252,94 @@ def launch_service(service):
                     'error': f'Failed to launch Plexamp: {e}'
                 }), 500
         
-        elif service == 'livetv':
-            # Launch IPTV application - Android or Linux
+        elif service == 'iptv':
+            # Launch IPTV application - Android, Windows, or Linux
             try:
                 # Detect operating system
                 os_type = detect_os()
                 logger.info(f"Detected OS: {os_type}")
                 
+                # Windows-specific handling
+                if os_type == 'windows':
+                    # Try to launch TvMate IPTV Pro
+                    tvmate_apps = [
+                        'TvMate IPTV Pro',
+                        'TvMate',
+                        'IPTV Pro'
+                    ]
+                    
+                    logger.info("Attempting to launch TvMate IPTV Pro on Windows")
+                    print(f"[INFO] Attempting to launch TvMate IPTV Pro on Windows")
+                    
+                    # Try to find and launch TvMate IPTV Pro
+                    tvmate_found = False
+                    for app_name in tvmate_apps:
+                        try:
+                            # Try to launch the app
+                            subprocess.Popen([
+                                'start', '', app_name
+                            ], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                            
+                            logger.info(f"{app_name} launched successfully")
+                            print(f"[SUCCESS] {app_name} launched successfully")
+                            return jsonify({
+                                'success': True,
+                                'message': f'{app_name} launched successfully',
+                                'platform': 'windows'
+                            })
+                        except Exception as e:
+                            logger.warning(f"Failed to launch {app_name}: {e}")
+                            print(f"[WARNING] Failed to launch {app_name}: {e}")
+                            continue
+                    
+                    # If TvMate not found, try to open Windows Store
+                    if not tvmate_found:
+                        logger.warning("TvMate IPTV Pro not found, opening Windows Store")
+                        print(f"[WARNING] TvMate IPTV Pro not found, opening Windows Store")
+                        try:
+                            # Try to open Windows Store for TvMate IPTV Pro
+                            subprocess.Popen([
+                                'start', 'ms-windows-store://pdp/?ProductId=9NBLGGH4Z1SP'
+                            ], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                            
+                            logger.info("Windows Store opened for TvMate IPTV Pro")
+                            print(f"[INFO] Windows Store opened for TvMate IPTV Pro")
+                            return jsonify({
+                                'success': True,
+                                'message': 'Install TvMate IPTV Pro - Windows Store opened',
+                                'platform': 'windows',
+                                'action': 'install'
+                            })
+                        except Exception as e:
+                            logger.error(f"Failed to open Windows Store: {e}")
+                            print(f"[ERROR] Failed to open Windows Store: {e}")
+                            # Fall through to Chrome extension fallback
+                    
+                    # Fallback to Chrome extension
+                    logger.info("Falling back to Chrome Fast IPTV Player extension")
+                    print(f"[INFO] Falling back to Chrome Fast IPTV Player extension")
+                    try:
+                        subprocess.Popen([
+                            'start', 'chrome', '--new-window', '--app=chrome-extension://fastiptvplayer/player.html'
+                        ], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        
+                        return jsonify({
+                            'success': True,
+                            'message': 'Fast IPTV Player Chrome extension launched',
+                            'platform': 'windows',
+                            'fallback': True
+                        })
+                    except Exception as e:
+                        logger.error(f"Failed to launch Chrome extension: {e}")
+                        print(f"[ERROR] Failed to launch Chrome extension: {e}")
+                        return jsonify({
+                            'success': False,
+                            'error': 'Could not launch any IPTV application',
+                            'platform': 'windows'
+                        }), 503
+                
                 # Android-specific handling
-                if os_type == 'android':
+                elif os_type == 'android':
                     # Check if MyTvOnline+ is installed
                     app_name = 'MyTvOnline+'
                     mytv_package = 'com.stalkermiddleware.mytvonline2'  # MyTvOnline+ package name
@@ -313,15 +392,30 @@ def launch_service(service):
                         print(f"[ERROR] Failed to open Play Store: {e}")
                         # Fall through to error message
                     
-                    # If we get here, couldn't open Play Store
-                    logger.error(f"Could not open Play Store for {app_name}")
-                    print(f"[ERROR] Could not open Play Store for {app_name}")
-                    return jsonify({
-                        'success': False,
-                        'error': f'Install {app_name} - Could not open Play Store',
-                        'platform': 'android',
-                        'action': 'install_required'
-                    }), 503
+                    # If we get here, couldn't open Play Store - fallback to Chrome extension
+                    logger.warning(f"Could not open Play Store for {app_name}, falling back to Chrome extension")
+                    print(f"[WARNING] Could not open Play Store for {app_name}, falling back to Chrome extension")
+                    try:
+                        subprocess.Popen([
+                            'am', 'start', '-a', 'android.intent.action.VIEW',
+                            '-d', 'chrome-extension://fastiptvplayer/player.html'
+                        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                        
+                        return jsonify({
+                            'success': True,
+                            'message': 'Fast IPTV Player Chrome extension launched',
+                            'platform': 'android',
+                            'fallback': True
+                        })
+                    except Exception as e:
+                        logger.error(f"Failed to launch Chrome extension: {e}")
+                        print(f"[ERROR] Failed to launch Chrome extension: {e}")
+                        return jsonify({
+                            'success': False,
+                            'error': f'Install {app_name} - Could not open Play Store or Chrome extension',
+                            'platform': 'android',
+                            'action': 'install_required'
+                        }), 503
                 
                 # Non-Android systems - use VLC
                 logger.info("Non-Android system, launching VLC")
@@ -846,7 +940,7 @@ def api_info():
     """API information and available endpoints"""
     endpoints = {
         'launch': {
-            'POST /api/launch/<service>': 'Launch a streaming service (netflix, amazon, youtube, plex, plexamp, spotify, livetv, smarthome)'
+            'POST /api/launch/<service>': 'Launch a streaming service (netflix, amazon, youtube, plex, plexamp, spotify, iptv, smarthome)'
         },
         'audio': {
             'GET /api/audio-devices': 'Get list of available audio devices',

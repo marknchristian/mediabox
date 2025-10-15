@@ -1624,7 +1624,7 @@
           <li><strong>Browser & Container Modes:</strong> Toggle between opening services in your Windows browser or launching in Docker container</li>
           <li><strong>Netflix, Prime Video, Plex:</strong> One-click access to all your favorite streaming platforms</li>
           <li><strong>Plexamp & Spotify:</strong> Music streaming with Plexamp for your library and Spotify Web</li>
-          <li><strong>YouTube & Live TV:</strong> Watch videos and live TV channels instantly</li>
+          <li><strong>YouTube & IPTV:</strong> Watch videos and IPTV channels instantly</li>
           <li><strong>Remote Plex Server:</strong> Connected to netlite.community for your media library</li>
           <li><strong>News:</strong> BBC News with clean, TV-friendly layout</li>
           <li><strong>Telegram:</strong> Web-based Telegram messaging client</li>
@@ -1784,10 +1784,15 @@
                 <span class="button-icon" style="display:none;">📺</span>
           <span class="button-label">Plex</span>
         </button>
-              <button class="dashboard-button" onclick="launchService('livetv')" oncontextmenu="event.preventDefault(); showPiPPreview('Live TV', SERVICE_URLS.livetv); return false;" data-service="livetv">
-          <img src="tvip.jpg" class="service-logo" alt="Live TV" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+              <button class="dashboard-button" onclick="launchService('iptv')" oncontextmenu="event.preventDefault(); showPiPPreview('IPTV', SERVICE_URLS.iptv); return false;" data-service="iptv">
+          <img src="tvip.jpg" class="service-logo" alt="IPTV" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <span class="button-icon" style="display:none;">📡</span>
-          <span class="button-label">Live TV</span>
+          <span class="button-label">IPTV</span>
+        </button>
+              <button class="dashboard-button" onclick="launchService('fastiptv')" oncontextmenu="event.preventDefault(); showPiPPreview('Fast IPTV', SERVICE_URLS.fastiptv); return false;" data-service="fastiptv">
+          <img src="tvip.jpg" class="service-logo" alt="Fast IPTV Player" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <span class="button-icon" style="display:none;">⚡</span>
+          <span class="button-label">Fast IPTV</span>
         </button>
               <button class="dashboard-button" onclick="launchService('plexamp')" oncontextmenu="event.preventDefault(); showPiPPreview('Plexamp', SERVICE_URLS.plexamp); return false;" data-service="plexamp">
                 <img src="plex music.jpg" class="service-logo" alt="Plexamp" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -2036,7 +2041,8 @@
       youtube: 'https://www.youtube.com',
       spotify: 'https://open.spotify.com',
       smarthome: 'http://' + window.location.hostname + ':8123',
-      livetv: 'http://' + window.location.hostname + ':8080/iptv',
+      iptv: 'http://' + window.location.hostname + ':8080/iptv',
+      fastiptv: 'chrome-extension://fastiptvplayer/player.html',
       news: 'https://www.bbc.com/news',  // BBC News - clean, TV-friendly layout
       telegram: 'https://web.telegram.org',
       calendar: 'https://outlook.office.com/bookings/calendar'  // Outlook Bookings Calendar
@@ -2115,11 +2121,16 @@
           packageId: 'com.microsoft.office.outlook',
           web: SERVICE_URLS.calendar
         },
-        livetv: {
+        iptv: {
           scheme: 'mytvonline://',
           intent: 'intent://open#Intent;scheme=mytvonline;package=com.stalkermiddleware.mytvonline2;end',
           packageId: 'com.stalkermiddleware.mytvonline2',
-          web: SERVICE_URLS.livetv
+          windows: 'TvMate IPTV Pro',
+          web: SERVICE_URLS.iptv
+        },
+        fastiptv: {
+          chrome: 'chrome-extension://fastiptvplayer/player.html',
+          web: SERVICE_URLS.fastiptv
         }
       };
 
@@ -2267,24 +2278,54 @@
           return;
         }
         
-      // Live TV always uses backend API for proper MyTvOnline+ handling
-      if (service === 'livetv') {
-        showStatus('Launching Live TV...', 'info');
+      // IPTV always uses backend API for proper platform-specific handling
+      if (service === 'iptv') {
+        showStatus('Launching IPTV...', 'info');
         fetch(`${API_BASE}/launch/${service}`, {
           method: 'POST'
         })
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            showStatus(data.message || 'Live TV launched successfully', 'success');
+            showStatus(data.message || 'IPTV launched successfully', 'success');
           } else {
-            showStatus(data.error || 'Failed to launch Live TV', 'error');
+            showStatus(data.error || 'Failed to launch IPTV', 'error');
           }
         })
         .catch(err => {
-          showStatus(`Failed to launch Live TV: ${err.message}`, 'error');
+          showStatus(`Failed to launch IPTV: ${err.message}`, 'error');
           console.error(err);
         });
+        return;
+      }
+      
+      // Fast IPTV Player Chrome extension
+      if (service === 'fastiptv') {
+        showStatus('Launching Fast IPTV Player...', 'info');
+        // Try Chrome extension first
+        const extensionUrl = 'chrome-extension://fastiptvplayer/player.html';
+        try {
+          // Open in new window with specific size to match preview window
+          const previewWindow = document.querySelector('.pip-preview');
+          let windowFeatures = 'width=1308,height=604,toolbar=no,menubar=no,scrollbars=yes,resizable=yes';
+          if (previewWindow) {
+            const rect = previewWindow.getBoundingClientRect();
+            windowFeatures = `width=${Math.round(rect.width)},height=${Math.round(rect.height)},left=${Math.round(rect.left)},top=${Math.round(rect.top)},toolbar=no,menubar=no,scrollbars=yes,resizable=yes`;
+          }
+          const newWindow = window.open(extensionUrl, 'FastIPTVPlayer', windowFeatures);
+          if (newWindow) {
+            showStatus('Fast IPTV Player launched successfully', 'success');
+          } else {
+            throw new Error('Chrome extension not found');
+          }
+        } catch (err) {
+          // Fallback to web version or show install message
+          showStatus('Chrome extension not found. Please install Fast IPTV Player extension.', 'warning');
+          setTimeout(() => {
+            showStatus('Opening Chrome Web Store...', 'info');
+            window.open('https://chrome.google.com/webstore/detail/fast-iptv-player-hls-m3u8/extension-id', '_blank');
+          }, 2000);
+        }
         return;
       }
       
